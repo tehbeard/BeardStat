@@ -47,17 +47,17 @@ public class EntityStatManager {
      * @param player
      * @return
      */
-    public Promise<EntityStatBlob> getPlayer(UUID player){
-        return getPlayerAsync(player, true);
+    public Promise<EntityStatBlob> getPlayer(UUID player, String name){
+        return getPlayerAsync(player, name, true);
     }
     
-    public Promise<EntityStatBlob> getPlayerAsync(UUID player, boolean create){
-        return get(new ProviderQuery(player, create));
+    public Promise<EntityStatBlob> getPlayerAsync(UUID player, String name, boolean create){
+        return get(new ProviderQuery(player, name, create).noNameChk());
     }
     
-    public EntityStatBlob getPlayer(UUID player, boolean create){
+    public EntityStatBlob getPlayer(UUID player, String name, boolean create){
         try{
-        return getPlayerAsync(player, create).getValue();
+        return getPlayerAsync(player, name, create).getValue();
         }catch(Exception e){
             platform.handleError(new BeardStatRuntimeException("An error occured loading a stat blob for " + player.toString(), e, true));
             return null;
@@ -76,17 +76,6 @@ public class EntityStatManager {
         return uuidCache.get(query.getUUID());
     }
     
-//    public EntityStatBlob getPlayerByName(String name){
-//        for(Promise<EntityStatBlob> e : uuidCache.values()){
-//            if(e.isResolved()){
-//                if(e.getValue().getName().equalsIgnoreCase(name)){
-//                    return e.getValue();
-//                }
-//            }
-//        }
-//        return null;
-//    }
-
     /**
      * Query the database
      *

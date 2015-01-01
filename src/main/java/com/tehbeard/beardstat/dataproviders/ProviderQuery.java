@@ -21,9 +21,10 @@ public class ProviderQuery {
     public final boolean create;
     
     public boolean likeName = false;
+    public boolean noNameChk = false;
     
-    public ProviderQuery(UUID player, boolean create){
-        this(null, IStatDataProvider.PLAYER_TYPE, player, create);
+    public ProviderQuery(UUID player, String name, boolean create){
+        this(name, IStatDataProvider.PLAYER_TYPE, player, create);
     }
     
     public ProviderQuery(String name,String type,UUID uuid,boolean create){
@@ -36,6 +37,11 @@ public class ProviderQuery {
     
     public ProviderQuery partialNameMatch(){
         likeName = true;
+        return this;
+    }
+    
+    public ProviderQuery noNameChk(){
+        noNameChk = true;
         return this;
     }
 

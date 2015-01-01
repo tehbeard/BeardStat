@@ -69,7 +69,7 @@ public class StatCommand extends BeardStatCommand {
                 String world = !stat.isEmpty() ? stat.pop() : ".*";
                 String domain = !stat.isEmpty() ? stat.pop() : ".*";
 
-                EntityStatBlob blob = this.playerStatManager.getPlayer(player.getUniqueId(), false);
+                EntityStatBlob blob = this.playerStatManager.getPlayer(player.getUniqueId(), player.getName(), false);
                 sender.sendMessage(ChatColor.YELLOW + "=========");
                 if (blob == null) {
                     sender.sendMessage(LanguagePack.getMsg("command.error.noplayer", player));
@@ -115,7 +115,7 @@ public class StatCommand extends BeardStatCommand {
             } else {
                 //TODO - Swap to API call instead?
                 sender.sendMessage(ChatColor.YELLOW + "=========");
-                Bukkit.dispatchCommand(sender, "statpage " + player + " default");
+                Bukkit.dispatchCommand(sender, "statpage " + player.getName() + " default");
             }
 
         } catch (Exception e) {
