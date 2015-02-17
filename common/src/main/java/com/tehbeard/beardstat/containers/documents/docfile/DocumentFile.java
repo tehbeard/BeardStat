@@ -121,15 +121,17 @@ public class DocumentFile {
     
     /**
      * Returns the Document
-     * Note: This runs updateDocument() on {@link IStatDynamicDocument} documents.
      * @return
      */
     @SuppressWarnings("unchecked")
     public <T extends IStatDocument> T getDocument() {
+        return (T)document;
+    }
+    
+    public void updateDocument() {
         if(document instanceof IStatDynamicDocument){
             ((IStatDynamicDocument) document).updateDocument(getOwner());
         }
-        return (T)document;
     }
     
     /**

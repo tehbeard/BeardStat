@@ -20,7 +20,7 @@ public class DocumentHistory {
      * @param domain
      * @param key
      */
-    public DocumentHistory(String domain, String key,String latestRevision) {
+    public DocumentHistory(String domain, String key, String latestRevision) {
         this.domain = domain;
         this.key = key;
         this.latestRevision = latestRevision;
