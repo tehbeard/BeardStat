@@ -23,9 +23,6 @@ public class ProviderQuery {
     public boolean likeName = false;
     public boolean noNameChk = false;
     
-    public ProviderQuery(UUID player, String name, boolean create){
-        this(name, IStatDataProvider.PLAYER_TYPE, player, create);
-    }
     
     public ProviderQuery(String name,UUID uuid,boolean create){
         this(name, IStatDataProvider.PLAYER_TYPE, uuid, create);
@@ -93,6 +90,7 @@ public class ProviderQuery {
     public ProviderQuery clone(){
         ProviderQuery p = new ProviderQuery(name, type, uuid, create);
         p.likeName = likeName;
+        p.noNameChk = noNameChk;
         return p;
     }
 

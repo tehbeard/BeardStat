@@ -54,7 +54,7 @@ public class EntityStatManager {
     }
     
     public Promise<EntityStatBlob> getPlayerAsync(String name, UUID player, boolean create){
-        return get(new ProviderQuery(name, player, create));
+        return get(new ProviderQuery(name, player, create).noNameChk());
     }
     
     @Deprecated
