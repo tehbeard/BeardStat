@@ -57,6 +57,7 @@ public abstract class JDBCStatDataProvider extends JDBCDataSource implements ISt
 
     //Entity scripts
     public static final String SQL_SAVE_ENTITY = "sql/entity/saveEntity";
+    public static final String SQL_UPDATE_ENTITY = "sql/entity/updateEntityName";
     public static final String SQL_SAVE_STAT = "sql/entity/saveStat";
     public static final String SQL_LOAD_ENTITY_DATA = "sql/entity/getEntityData";
     //Component scripts
@@ -103,6 +104,8 @@ public abstract class JDBCStatDataProvider extends JDBCDataSource implements ISt
     // save to db
     @SQLScript(value=SQL_SAVE_ENTITY, flags = Statement.RETURN_GENERATED_KEYS)
     protected PreparedStatement saveEntity;
+    @SQLScript(value=SQL_UPDATE_ENTITY)
+    protected PreparedStatement updateEntityName;
     @SQLScript(SQL_SAVE_STAT)
     protected PreparedStatement saveEntityData;
     // Maintenance
@@ -317,8 +320,12 @@ public abstract class JDBCStatDataProvider extends JDBCDataSource implements ISt
             ResultSet rs;
 
             if (result != null) {
-
-                esb = new EntityStatBlob(result.name, result.dbid, result.type, result.uuid, this);//Create the damn esb
+                if(!result.name.equals(query.name)){
+                    updateEntityName.setString(1,query.name);
+                    updateEntityName.setString(2,result.asProviderQuery().getUUIDString());
+                    updateEntityName.execute();
+                }
+                esb = new EntityStatBlob(query.name, result.dbid, result.type, result.uuid, this);//Create the damn esb
                 // load all stats data
                 loadEntityData.setInt(1, esb.getEntityID());
                 rs = loadEntityData.executeQuery();
