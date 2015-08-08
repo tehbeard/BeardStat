@@ -10,31 +10,33 @@ import org.bukkit.potion.PotionEffect;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import java.io.BufferedReader;
+import org.apache.commons.lang.ClassUtils;
 
 /**
- * Generates Ids based off the data from http://minecraft-ids.grahamedgecombe.com
+ * Generates Ids based off the data from
+ * http://minecraft-ids.grahamedgecombe.com
+ *
  * @author James
  *
  */
 public class GrahamIdentifierService implements IIdentifierGenerator {
-    
-    private static Map<Integer,GrahamItem> items;
+
+    private static Map<String, GrahamItem> items;
 
     @Override
     public String keyForId(int id, int meta) {
-        return null;
+        return items.get(id + ":" + meta).getKey();
     }
 
     @Override
     public String keyForId(int id) {
-        // TODO Auto-generated method stub
-        return null;
+        return items.get(id + ":" + 0).getKeyNoMeta();
     }
 
     @Override
     public String keyForEntity(Entity entity) {
-        // TODO Auto-generated method stub
-        return null;
+        return "minecraft:" + entity.getType().getName();
     }
 
     @Override
@@ -45,24 +47,35 @@ public class GrahamIdentifierService implements IIdentifierGenerator {
 
     @Override
     public String getHumanName(String key) {
-        // TODO Auto-generated method stub
+        for(GrahamItem item : items.values()){
+            
+        }
         return null;
     }
 
-    public static void readData(InputStream is){
+    public static void readData() {
+        //Load item data
         Gson gson = new Gson();
-        List<GrahamItem> itemList = gson.fromJson(new InputStreamReader(is), new TypeToken<List<GrahamItem>>() {
+        List<GrahamItem> itemList = gson.fromJson(new InputStreamReader(GrahamIdentifierService.class.getResourceAsStream("data/items.json")), new TypeToken<List<GrahamItem>>() {
         }.getType());
-        
-        for(GrahamItem i : itemList){
-            items.put(i.type, i);
+
+        for (GrahamItem i : itemList) {
+            items.put(i.type + ":" + i.meta, i);
         }
-    }
-    
+        }
+
     public class GrahamItem {
         public int type;
         public int meta;
         public String name;
         public String text_type;
+
+        public String getKey() {
+            return "minecraft:" + text_type + ":" + meta;
+        }
+
+        public String getKeyNoMeta() {
+            return "minecraft:" + text_type;
+        }
     }
 }

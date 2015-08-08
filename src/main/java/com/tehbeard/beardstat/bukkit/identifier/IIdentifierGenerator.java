@@ -17,7 +17,12 @@ public interface IIdentifierGenerator {
      * @return
      */
     public String keyForId(int id,int meta);
-    
+    /**
+     * Get the key for this object w/o any metadata attached
+     * e.g. minecraft:wool instead of minecraft:wool:5
+     * @param id
+     * @return 
+     */
     public String keyForId(int id);
     
     
