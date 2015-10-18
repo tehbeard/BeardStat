@@ -11,8 +11,8 @@
     <name>BeardStat</name>
 
     <modules>
-<!--         <module>sponge</module>
-        <module>spigot</module> -->
+         <!--<module>sponge</module>-->
+        <module>spigot</module> 
         <module>common</module>
     </modules>
     

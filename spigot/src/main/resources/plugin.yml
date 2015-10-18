@@ -1,0 +1,63 @@
+name: BeardStat
+main: com.tehbeard.beardstat.bukkit.BukkitPlugin
+version: ${project.plugin.version}-${describe}
+authors: [Tehbeard]
+commands:
+    stats:
+        description: Show stats about yourself or another player
+        usage: /stats [stats]...
+        aliases: [bstats]
+        permission: stat.command.stat
+    played:
+        description: Show play time for you or another player
+        usage: /played [player]
+        aliases: [bplayed]
+        permission: stat.command.played
+    statpage:
+        description: View the various stats pages
+        usage: /statpage [page]
+        aliases: [bstatpage]
+    laston:
+        description: View last time a player was on
+        usage: /laston [player]
+        aliases: [blaston]
+        permission: stat.command.laston
+    beardstatdebug:
+        description: Print debug information
+        usage: /<command>
+        permission: stat.command.admin
+    statadmin:
+        description: Admin control
+        usage: /<command>    
+        permission: stat.command.admin
+    statexecscript:
+        description: Execute sql script in plugins/BeardStat/sqlfix/
+        usage: /<command> scriptname
+permissions:
+  stat.command.admin:
+    description: Access to /statadmin that allows deletion/reset of stats
+    default: op
+  stat.*:
+    description: Allows use of all stat commands
+    default: op
+    children:
+      stat.command.stat: true
+      stat.command.played: true
+      stat.command.played.other: true
+      stat.command.stat.other: true
+      stat.command.laston: true
+  stat.command.stat:
+    description: View your own stats
+    default: true
+  stat.command.stat.other:
+    description: View other's stats
+    default: op
+  stat.command.played:
+    description: Allows you to view your /played
+    default: true
+  stat.command.played.other:
+    description: See how much others have played
+    default: op
+  stat.command.laston:
+    description: View when a player was last online
+    default: op

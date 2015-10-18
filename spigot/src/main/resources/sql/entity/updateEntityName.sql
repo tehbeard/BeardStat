@@ -1,0 +1,1 @@
+UPDATE `${PREFIX}_entity` SET `name` = ? WHERE `uuid`=?;

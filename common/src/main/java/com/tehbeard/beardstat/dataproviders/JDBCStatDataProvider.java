@@ -8,7 +8,7 @@ import com.tehbeard.beardstat.containers.IStat;
 import com.tehbeard.beardstat.containers.StatBlobRecord;
 import com.tehbeard.beardstat.containers.documents.docfile.DocumentFile;
 import com.tehbeard.beardstat.containers.documents.docfile.DocumentFileRef;
-import com.tehbeard.beardstat.bukkit.identifier.IdentifierService;
+import com.tehbeard.beardstat.identifier.IdentifierService;
 import com.tehbeard.beardstat.dataproviders.metadata.CategoryMeta;
 import com.tehbeard.beardstat.dataproviders.metadata.DomainMeta;
 import com.tehbeard.beardstat.dataproviders.metadata.StatisticMeta;
