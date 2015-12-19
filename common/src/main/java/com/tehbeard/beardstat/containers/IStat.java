@@ -65,10 +65,10 @@ public interface IStat {
      */
     public void decrementStat(int i);
 
-    /**
-     * Clone self
-     * 
-     * @return
-     */
-    public IStat clone();
+//    /**
+//     * Clone self
+//     * 
+//     * @return
+//     */
+//    public IStat clone();
 }

@@ -14,24 +14,15 @@ import com.tehbeard.beardstat.containers.meta.WorldPointer;
  * 
  */
 
-public class StaticStat implements IStat {
+public class StaticStat extends AbstractStat {
 
-    EntityStatBlob  owner    = null;
-    private DomainPointer domain;
-    private WorldPointer world;
-    private CategoryPointer category;
-    private StatPointer  statistic;
     private int     value;
 
     private boolean archive  = false;
 
     public StaticStat(DomainPointer domain, WorldPointer world, CategoryPointer cat, StatPointer statistic, int value) {
-        if(statistic == null){throw new IllegalArgumentException("Passed null statistic");}
-        this.domain = domain;
-        this.world = world;
-        this.statistic = statistic;
+        super(domain, world, cat, statistic);
         this.value = value;
-        this.category = cat;
     }
 
     /**
@@ -55,15 +46,6 @@ public class StaticStat implements IStat {
         changeValue(value);
     }
 
-    /**
-     * Get the stats name
-     * 
-     * @return name of tstat
-     */
-    @Override
-    public StatPointer getStatistic() {
-        return this.statistic;
-    }
 
     /**
      * Increment the stat by i
@@ -91,13 +73,6 @@ public class StaticStat implements IStat {
         changeValue(this.value - i);
     }
 
-    /**
-     * @return name of category stat is in
-     */
-    @Override
-    public CategoryPointer getCategory() {
-        return this.category;
-    }
 
     /**
      * Clear the archive flag
@@ -116,30 +91,16 @@ public class StaticStat implements IStat {
         return this.archive;
     }
 
-    /**
-     * get the blob of stats this stat belongs to.
-     */
-    @Override
-    public EntityStatBlob getOwner() {
-        return this.owner;
-    }
 
     private synchronized void changeValue(int to) {
         this.value = to;
         this.archive = true;
     }
 
-    /**
-     * Set owner of this stat
-     */
-    @Override
-    public void setOwner(EntityStatBlob playerStatBlob) {
-        this.owner = playerStatBlob;
-    }
 
     @Override
     public String toString() {
-        return this.category + "." + this.statistic + "=" + this.value;
+        return this.getCategory() + "." + this.getStatistic() + "=" + this.value;
     }
 
     @Override
@@ -149,17 +110,7 @@ public class StaticStat implements IStat {
     }
 
     @Override
-    public DomainPointer getDomain() {
-        return this.domain;
-    }
-
-    @Override
-    public WorldPointer getWorld() {
-        return this.world;
-    }
-
-    @Override
     public IStat clone() {
-        return new StaticStat(this.domain, this.world, this.category, this.statistic, this.value);
+        return new StaticStat(this.getDomain(), this.getWorld(), this.getCategory(), this.getStatistic(), this.value);
     }
 }

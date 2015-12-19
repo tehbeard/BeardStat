@@ -14,6 +14,10 @@ import com.tehbeard.beardstat.Refs;
 import com.tehbeard.beardstat.containers.documents.IStatDocument;
 import com.tehbeard.beardstat.containers.documents.docfile.DocumentFile;
 import com.tehbeard.beardstat.containers.documents.docfile.DocumentFileRef;
+import com.tehbeard.beardstat.containers.meta.CategoryPointer;
+import com.tehbeard.beardstat.containers.meta.DomainPointer;
+import com.tehbeard.beardstat.containers.meta.StatPointer;
+import com.tehbeard.beardstat.containers.meta.WorldPointer;
 import com.tehbeard.beardstat.dataproviders.IStatDataProvider;
 import com.tehbeard.utils.expressions.VariableProvider;
 
@@ -99,7 +103,7 @@ public class EntityStatBlob implements VariableProvider {
      * @param statistic name of statistic
      * @return
      */
-    public IStat getStat(String domain, String world, String category, String statistic) {
+    public IStat getStat(DomainPointer domain, WorldPointer world, CategoryPointer category, StatPointer statistic) {
         IStat psn = this.stats.get(domain + "::" + world + "::" + category + "::" + statistic);
         if (psn != null) {
             return psn;

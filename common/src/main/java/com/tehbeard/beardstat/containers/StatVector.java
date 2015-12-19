@@ -1,5 +1,9 @@
 package com.tehbeard.beardstat.containers;
 
+import com.tehbeard.beardstat.containers.meta.CategoryPointer;
+import com.tehbeard.beardstat.containers.meta.DomainPointer;
+import com.tehbeard.beardstat.containers.meta.StatPointer;
+import com.tehbeard.beardstat.containers.meta.WorldPointer;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -12,22 +16,14 @@ import java.util.List;
  * @author James
  * 
  */
-public class StatVector implements IStat, Iterable<IStat> {
+public class StatVector extends AbstractStat implements Iterable<IStat> {
 
     private List<IStat> stats    = new ArrayList<IStat>();
 
-    private String      domain;
-    private String      world;
-    private String      category;
-    private String      statistic;
-
     private boolean     readOnly = false;
 
-    public StatVector(String domain, String world, String category, String statistic, boolean readOnly) {
-        this.domain = domain;
-        this.world = world;
-        this.category = category;
-        this.statistic = statistic;
+    public StatVector(DomainPointer domain, WorldPointer world, CategoryPointer cat, StatPointer statistic, boolean readOnly) {
+        super(domain, world, cat, statistic);
         this.readOnly = readOnly;
     }
 
@@ -53,16 +49,6 @@ public class StatVector implements IStat, Iterable<IStat> {
         for (IStat s : this.stats) {
             s.setValue(value);
         }
-    }
-
-    @Override
-    public String getStatistic() {
-        return this.statistic;
-    }
-
-    @Override
-    public String getCategory() {
-        return this.category;
     }
 
     @Override
@@ -96,25 +82,6 @@ public class StatVector implements IStat, Iterable<IStat> {
         return null;
     }
 
-    @Override
-    public void setDomain(String domain) {
-
-    }
-
-    @Override
-    public String getDomain() {
-        return this.domain;
-    }
-
-    @Override
-    public void setWorld(String world) {
-
-    }
-
-    @Override
-    public String getWorld() {
-        return this.world;
-    }
 
     @Override
     public void incrementStat(int i) {

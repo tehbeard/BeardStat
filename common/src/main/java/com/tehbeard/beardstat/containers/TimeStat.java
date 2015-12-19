@@ -1,60 +1,30 @@
 package com.tehbeard.beardstat.containers;
 
-import com.tehbeard.beardstat.Refs;
+import com.tehbeard.beardstat.containers.meta.CategoryPointer;
+import com.tehbeard.beardstat.containers.meta.DomainPointer;
+import com.tehbeard.beardstat.containers.meta.StatPointer;
+import com.tehbeard.beardstat.containers.meta.WorldPointer;
 
 /**
  * Represents a timeable stat, adds a few handy features.
  * @author James
  *
  */
-public class TimeStat implements IStat {
-
-    public TimeStat(EntityStatBlob owner) {
-        this.owner = owner;
-    }
+public class TimeStat extends AbstractStat {
 
     /**
      * @param owner
      * @param domain
+     * @param cat
      * @param world
      * @param statistic
      * @param category
      */
-    public TimeStat(EntityStatBlob owner, String domain, String world, String statistic, String category) {
-        this.owner = owner;
-        this.domain = domain;
-        this.world = world;
-        this.statistic = statistic;
-        this.category = category;
+    public TimeStat(DomainPointer domain, WorldPointer world, CategoryPointer cat, StatPointer statistic, EntityStatBlob owner) {
+        super(domain, world, cat, statistic);
     }
 
     private int value = 0;
-    private EntityStatBlob owner;
-    
-    private String domain;
-    private String world;
-    private String statistic;
-    private String category;
-
-    @Override
-    public void setWorld(String world) {
-        this.world = world;
-    }
-
-    @Override
-    public void setValue(int value) {
-        this.value =value;  
-    }
-
-    @Override
-    public void setOwner(EntityStatBlob playerStatBlob) {
-        this.owner = owner;
-    }
-
-    @Override
-    public void setDomain(String domain) {
-        this.domain = domain;
-    }
 
     @Override
     public boolean isArchive() {
@@ -67,34 +37,8 @@ public class TimeStat implements IStat {
     }
 
     @Override
-    public String getWorld() {
-
-        return Refs.GLOBAL_WORLD;// Bukkit.getPlayer(getName()).getWorld().getName();
-    }
-
-    @Override
     public int getValue() {
         return value + getTime();
-    }
-
-    @Override
-    public String getStatistic() {
-        return statistic;
-    }
-
-    @Override
-    public EntityStatBlob getOwner() {
-        return this.owner;
-    }
-
-    @Override
-    public String getDomain() {
-        return domain;
-    }
-
-    @Override
-    public String getCategory() {
-        return category;
     }
 
     @Override
@@ -148,4 +92,7 @@ public class TimeStat implements IStat {
         value += getTime();
         resetTimer();
     }
+
+    @Override
+    public void setValue(int value) { this.value = value; }
 }
