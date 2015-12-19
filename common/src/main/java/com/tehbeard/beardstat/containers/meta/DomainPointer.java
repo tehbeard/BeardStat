@@ -1,5 +1,8 @@
 package com.tehbeard.beardstat.containers.meta;
 
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  *
  * @author james
@@ -14,5 +17,20 @@ public class DomainPointer extends AbstractPointer {
 
     public String getGameTag() {
         return gameTag;
+    }
+    
+    private final static Set<DomainPointer> pointers = new HashSet<DomainPointer>();
+    
+    public static DomainPointer get(String name) {
+        DomainPointer p = new DomainPointer(name);
+        if(!pointers.contains(p)){
+            pointers.add(p);
+        }
+        for(DomainPointer pp : pointers){
+            if(pp.equals(p)){
+                return pp;
+            }
+        }
+        throw new IllegalStateException("Fell out of loop in get()");
     }
 }

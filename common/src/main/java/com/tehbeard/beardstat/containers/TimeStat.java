@@ -18,7 +18,6 @@ public class TimeStat extends AbstractStat {
      * @param cat
      * @param world
      * @param statistic
-     * @param category
      */
     public TimeStat(DomainPointer domain, WorldPointer world, CategoryPointer cat, StatPointer statistic, EntityStatBlob owner) {
         super(domain, world, cat, statistic);

@@ -1,5 +1,10 @@
 package com.tehbeard.beardstat.containers.meta;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -31,5 +36,42 @@ public class CategoryPointer extends AbstractPointer  {
 
     public String wrapStatistic(String contents) {
         return String.format(statWrapper, contents);
+    }  
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 79 * hash + (this.gameTag != null ? this.gameTag.hashCode() : 0);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final CategoryPointer other = (CategoryPointer) obj;
+        if ((this.gameTag == null) ? (other.gameTag != null) : !this.gameTag.equals(other.gameTag)) {
+            return false;
+        }
+        return true;
+    }
+    
+    private final static Set<CategoryPointer> pointers = new HashSet<CategoryPointer>();
+    
+    public static CategoryPointer get(String name) {
+        CategoryPointer p = new CategoryPointer(name);
+        if(!pointers.contains(p)){
+            pointers.add(p);
+        }
+        for(CategoryPointer pp : pointers){
+            if(pp.equals(p)){
+                return pp;
+            }
+        }
+        throw new IllegalStateException("Fell out of loop in get()");
     }
 }
