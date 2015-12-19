@@ -1,5 +1,10 @@
 package com.tehbeard.beardstat.containers;
 
+import com.tehbeard.beardstat.containers.meta.CategoryPointer;
+import com.tehbeard.beardstat.containers.meta.DomainPointer;
+import com.tehbeard.beardstat.containers.meta.StatPointer;
+import com.tehbeard.beardstat.containers.meta.WorldPointer;
+
 /**
  * Concrete implementation of a player stat. This is the default type for stats,
  * They do not change themselves, instead relying on other code to modify them.
@@ -12,15 +17,15 @@ package com.tehbeard.beardstat.containers;
 public class StaticStat implements IStat {
 
     EntityStatBlob  owner    = null;
-    private String  domain;
-    private String  world;
-    private String  category = "stats";
-    private String  statistic;
+    private DomainPointer domain;
+    private WorldPointer world;
+    private CategoryPointer category;
+    private StatPointer  statistic;
     private int     value;
 
     private boolean archive  = false;
 
-    public StaticStat(String domain, String world, String cat, String statistic, int value) {
+    public StaticStat(DomainPointer domain, WorldPointer world, CategoryPointer cat, StatPointer statistic, int value) {
         if(statistic == null){throw new IllegalArgumentException("Passed null statistic");}
         this.domain = domain;
         this.world = world;
@@ -56,7 +61,7 @@ public class StaticStat implements IStat {
      * @return name of tstat
      */
     @Override
-    public String getStatistic() {
+    public StatPointer getStatistic() {
         return this.statistic;
     }
 
@@ -90,7 +95,7 @@ public class StaticStat implements IStat {
      * @return name of category stat is in
      */
     @Override
-    public String getCategory() {
+    public CategoryPointer getCategory() {
         return this.category;
     }
 
@@ -144,22 +149,12 @@ public class StaticStat implements IStat {
     }
 
     @Override
-    public void setDomain(String domain) {
-        this.domain = domain;
-    }
-
-    @Override
-    public String getDomain() {
+    public DomainPointer getDomain() {
         return this.domain;
     }
 
     @Override
-    public void setWorld(String world) {
-        this.world = world;
-    }
-
-    @Override
-    public String getWorld() {
+    public WorldPointer getWorld() {
         return this.world;
     }
 

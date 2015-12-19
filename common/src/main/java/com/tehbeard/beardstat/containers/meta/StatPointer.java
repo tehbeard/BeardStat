@@ -17,9 +17,8 @@ import java.util.TreeMap;
  *
  * @author James
  */
-public class StatPointer {
+public class StatPointer extends AbstractPointer {
 
-    private int id;
 
     private final String name;
 
@@ -68,12 +67,11 @@ public class StatPointer {
         none, time, timestamp
     }
 
-    private StatPointer(int id, String name) {
-        this(id, name, new HashMap<String, String>());
+    private StatPointer(String name) {
+        this(name, new HashMap<String, String>());
     }
 
-    private StatPointer(int id, String name, Map<String, String> data) {
-        this.id = id;
+    private StatPointer(String name, Map<String, String> data) {
         this.name = name;
         Map<String, String> m = new TreeMap<String, String>();
         m.putAll(data);
@@ -88,7 +86,6 @@ public class StatPointer {
     @Override
     public int hashCode() {
         int hash = 5;
-        hash = 97 * hash + this.id;
         hash = 97 * hash + (this.name != null ? this.name.hashCode() : 0);
         hash = 97 * hash + (this.classifiers != null ? this.classifiers.hashCode() : 0);
         return hash;
@@ -103,9 +100,7 @@ public class StatPointer {
             return false;
         }
         final StatPointer other = (StatPointer) obj;
-        if (this.id != other.id) {
-            return false;
-        }
+
         if ((this.name == null) ? (other.name != null) : !this.name.equals(other.name)) {
             return false;
         }
@@ -144,14 +139,11 @@ public class StatPointer {
             return false;
         }
         for (Entry<String, String> e : pointer.classifiers.entrySet()) {
-            if ( //Fail if key doesn't exist
+            if ( 
                     !this.classifiers.containsKey(e.getKey())
-                    || // Fail if key doesn't match:
-                    // * Fails straight equality check
-                    // * Search value is null (taken as wildcard)
-                    // * equals(..) check fails
-                    !(e.getValue() == null
-                    || e.getValue().equals(this.classifiers.get(e.getKey())))) {
+                    || !(e.getValue() == null
+                    || e.getValue().equals(this.classifiers.get(e.getKey())))
+                ) {
                 return false;
             }
         }
@@ -159,7 +151,7 @@ public class StatPointer {
     }
 
     public static Set<StatPointer> filter(String name, Map<String, String> constraints) {
-        StatPointer qry = new StatPointer(0, name, constraints);
+        StatPointer qry = new StatPointer(name, constraints);
         Set<StatPointer> results = new HashSet<StatPointer>();
         for (StatPointer p : pointers) {
             if (p.contains(qry)) {
@@ -168,17 +160,41 @@ public class StatPointer {
         }
         return results;
     }
+    
+    public static StatPointer get(String name, Map<String,String> constraints) {
+        StatPointer p = new StatPointer(name, constraints);
+        if(!pointers.contains(p)){
+            pointers.add(p);
+        }
+        for(StatPointer pp : pointers){
+            if(pp.equals(p)){
+                return pp;
+            }
+        }
+        throw new IllegalStateException("Fell out of loop in get()");
+    }
 
     public static void main(String[] args) {
-
-        StatPointer s = new StatPointer(1, "minecraft:wool_chest", new HashMap<String, String>() {
+        StatPointer s = StatPointer.get("minecraft:wool_chest", new HashMap<String, String>() {
             {
                 put("direction", "south");
                 put("color", "red");
                 put("open", "yes");
             }
         });
+        
+        StatPointer.get("minecraft:wool_chest", new HashMap<String, String>() {
+            {
+                put("direction", "south");
+                put("color", "red");
+                put("open", "yes");
+            }
+        });
+        
+               
 
         System.out.println(s.toTag());
+        System.out.println(pointers);
+        System.out.println(pointers.size());
     }
 }

@@ -10,25 +10,19 @@ package com.tehbeard.beardstat.containers.meta;
  *
  * @author james
  */
-public class CategoryPointer {
-    private final int dbId;
+public class CategoryPointer extends AbstractPointer  {
     private final String gameTag;
     private final String statWrapper;
     
     
-    public CategoryPointer(int dbId, String gameTag){
-        this(dbId, gameTag,"%s");
+    public CategoryPointer(String gameTag){
+        this(gameTag,"%s");
     }
     
-    public CategoryPointer(int dbId, String gameTag, String statwrapper){
-        this.dbId = dbId;
+    public CategoryPointer(String gameTag, String statwrapper){
         this.gameTag = gameTag;
         this.statWrapper = statwrapper;
         
-    }
-
-    public int getDbId() {
-        return dbId;
     }
 
     public String getGameTag() {

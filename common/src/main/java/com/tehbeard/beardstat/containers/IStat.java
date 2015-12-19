@@ -1,5 +1,10 @@
 package com.tehbeard.beardstat.containers;
 
+import com.tehbeard.beardstat.containers.meta.CategoryPointer;
+import com.tehbeard.beardstat.containers.meta.DomainPointer;
+import com.tehbeard.beardstat.containers.meta.StatPointer;
+import com.tehbeard.beardstat.containers.meta.WorldPointer;
+
 /**
  * Represents a stat
  * 
@@ -28,9 +33,9 @@ public interface IStat {
      * 
      * @return
      */
-    public String getStatistic();
+    public StatPointer getStatistic();
 
-    public String getCategory();
+    public CategoryPointer getCategory();
 
     public void clearArchive();
 
@@ -42,13 +47,9 @@ public interface IStat {
 
     public EntityStatBlob getOwner();
 
-    public void setDomain(String domain);
+    public DomainPointer getDomain();
 
-    public String getDomain();
-
-    public void setWorld(String world);
-
-    public String getWorld();
+    public WorldPointer getWorld();
 
     /**
      * Increment the stat by i
