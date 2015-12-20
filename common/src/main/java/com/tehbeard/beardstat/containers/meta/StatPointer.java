@@ -20,11 +20,11 @@ import java.util.TreeMap;
 public class StatPointer extends AbstractPointer {
 
 
-    private final String name;
+    public final String name;
 
     private final Map<String, String> classifiers;
 
-    private final Formatting format = Formatting.none;
+    public final Formatting format = Formatting.none;
 
     private final String outputStr = "%s";
     
@@ -153,7 +153,7 @@ public class StatPointer extends AbstractPointer {
         }
         return true;
     }
-
+    
     public String getHumanName() {
         return humanName;
     }

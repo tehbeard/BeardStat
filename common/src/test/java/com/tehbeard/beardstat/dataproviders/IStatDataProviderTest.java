@@ -14,11 +14,11 @@ import com.tehbeard.beardstat.containers.documents.DocumentHistory;
 import com.tehbeard.beardstat.containers.documents.DocumentRegistry;
 import com.tehbeard.beardstat.containers.documents.docfile.DocumentFile;
 import com.tehbeard.beardstat.containers.documents.docfile.DocumentFileRef;
+import com.tehbeard.beardstat.containers.meta.CategoryPointer;
+import com.tehbeard.beardstat.containers.meta.DomainPointer;
+import com.tehbeard.beardstat.containers.meta.StatPointer;
+import com.tehbeard.beardstat.containers.meta.WorldPointer;
 import com.tehbeard.beardstat.dataproviders.MemoDocument.Memo;
-import com.tehbeard.beardstat.dataproviders.metadata.CategoryMeta;
-import com.tehbeard.beardstat.dataproviders.metadata.DomainMeta;
-import com.tehbeard.beardstat.dataproviders.metadata.StatisticMeta;
-import com.tehbeard.beardstat.dataproviders.metadata.WorldMeta;
 import com.tehbeard.utils.uuid.MojangWebAPI;
 
 /**
@@ -26,10 +26,8 @@ import com.tehbeard.utils.uuid.MojangWebAPI;
  * @author James
  */
 public abstract class IStatDataProviderTest {
-    
+
     protected static IStatDataProvider instance;
-    
-   
 
     /**
      * Test of pullEntityBlob method, of class IStatDataProvider.
@@ -38,9 +36,9 @@ public abstract class IStatDataProviderTest {
     public void testPullEntityBlob() {
         System.out.println("pullEntityBlob");
         ProviderQuery query = new ProviderQuery("Tehbeard", IStatDataProvider.PLAYER_TYPE, MojangWebAPI.expandUUID("09d770ac7bfe48a2bf6877cbd21c51a1"), false);
-        EntityStatBlob blob  = instance.pullEntityBlob(query);
+        EntityStatBlob blob = instance.pullEntityBlob(query);
         assertEquals(blob.getName(), "Tehbeard");
-        
+
     }
 
     /**
@@ -51,17 +49,32 @@ public abstract class IStatDataProviderTest {
         System.out.println("pushEntityBlob");
         ProviderQuery query = new ProviderQuery("Tehbeard", IStatDataProvider.PLAYER_TYPE, MojangWebAPI.expandUUID("09d770ac7bfe48a2bf6877cbd21c51a1"), false);
         EntityStatBlob blob = instance.pullEntityBlob(query);
-        blob.getStat("world", "stats", "playedfor").setValue(500);
-        assertEquals("value was set", 500,blob.getStat("world", "stats", "playedfor").getValue());
-        
+        blob.getStat(
+                WorldPointer.get("world"),
+                CategoryPointer.get("stats"),
+                StatPointer.get("playedfor")
+        ).setValue(500);
+        assertEquals("value was set", 500, blob.getStat(
+                WorldPointer.get("world"),
+                CategoryPointer.get("stats"),
+                StatPointer.get("playedfor")
+        ).getValue());
+
         instance.pushEntityBlob(blob);
         instance.flushSync();
-        
+
         blob = instance.pullEntityBlob(query);
-        System.out.println(blob.getStat("world", "stats", "playedfor").getValue());
-        assertEquals("value was written", 500,blob.getStat("world", "stats", "playedfor").getValue());
-        
-        
+        System.out.println(blob.getStat(
+                WorldPointer.get("world"),
+                CategoryPointer.get("stats"),
+                StatPointer.get("playedfor")
+        ).getValue());
+        assertEquals("value was written", 500, blob.getStat(
+            WorldPointer.get("world"), 
+            CategoryPointer.get("stats"), 
+            StatPointer.get("playedfor")
+        ).getValue());
+
     }
 
     /**
@@ -93,7 +106,7 @@ public abstract class IStatDataProviderTest {
         System.out.println("queryDatabase");
         ProviderQuery query = new ProviderQuery(null, IStatDataProvider.PLAYER_TYPE, null, false);
         ProviderQueryResult[] result = instance.queryDatabase(query);
-        assertEquals("5 entries returned",5, result.length);
+        assertEquals("5 entries returned", 5, result.length);
     }
 
     /**
@@ -105,7 +118,6 @@ public abstract class IStatDataProviderTest {
         instance.flushSync();
     }
 
-
     /**
      * Test of getDomain method, of class IStatDataProvider.
      */
@@ -113,8 +125,8 @@ public abstract class IStatDataProviderTest {
     public void testGetDomain() {
         System.out.println("getDomain");
         String gameTag = "default";
-        DomainMeta result = instance.getDomain(gameTag, true);
-        assertEquals(1, result.getDbId());
+        DomainPointer result = DomainPointer.get(gameTag);
+        assertEquals(1, result.getId());
     }
 
     /**
@@ -124,7 +136,7 @@ public abstract class IStatDataProviderTest {
     public void testGetWorld() {
         System.out.println("getWorld");
         String gameTag = "world";
-        WorldMeta result = instance.getWorld(gameTag, true);
+        WorldPointer result = WorldPointer.get(gameTag);
         assertEquals("world", result.getGameTag());
     }
 
@@ -135,7 +147,7 @@ public abstract class IStatDataProviderTest {
     public void testGetCategory() {
         System.out.println("getCategory");
         String gameTag = "stats";
-        CategoryMeta result = instance.getCategory(gameTag, true);
+        CategoryPointer result = CategoryPointer.get(gameTag);
         assertEquals(gameTag, result.getGameTag());
     }
 
@@ -146,9 +158,9 @@ public abstract class IStatDataProviderTest {
     public void testGetStatistic() {
         System.out.println("getStatistic");
         String gameTag = "playedfor";
-        StatisticMeta result = instance.getStatistic(gameTag, true);
-        assertEquals(gameTag, result.getName());
-        assertEquals(StatisticMeta.Formatting.time, result.getFormat());
+        StatPointer result = StatPointer.get(gameTag);
+        assertEquals(gameTag, result.name);
+        assertEquals(StatPointer.Formatting.time, result.format);
         // TODO review the generated test code and remove the default call to fail.
     }
 
@@ -167,16 +179,16 @@ public abstract class IStatDataProviderTest {
      */
     @Test
     public void testPullDocument() {
-        
+
         System.out.println("pullDocument");
-        
+
         ProviderQuery query = new ProviderQuery("Tehbeard", IStatDataProvider.PLAYER_TYPE, MojangWebAPI.expandUUID("09d770ac7bfe48a2bf6877cbd21c51a1"), false);
         EntityStatBlob result = instance.pullEntityBlob(query);
-        
+
         DocumentRegistry.registerDocument(MemoDocument.class);
         DocumentRegistry.cleanup();
-        result.getDocument("default","memo", MemoDocument.class);
-                
+        result.getDocument(DomainPointer.get("default"), "memo", MemoDocument.class);
+
     }
 
     /**
@@ -184,73 +196,69 @@ public abstract class IStatDataProviderTest {
      */
     @Test
     public void testPushDocument() throws Exception {
-        
+
         System.out.println("pushDocument");
         ProviderQuery query = new ProviderQuery("Tehbeard", IStatDataProvider.PLAYER_TYPE, MojangWebAPI.expandUUID("09d770ac7bfe48a2bf6877cbd21c51a1"), false);
         EntityStatBlob result = instance.pullEntityBlob(query);
-        
+
         DocumentRegistry.registerDocument(MemoDocument.class);
         DocumentRegistry.cleanup();
-        DocumentFile docFile = result.getDocument("default","memo", MemoDocument.class);
+        DocumentFile docFile = result.getDocument(DomainPointer.get("default"), "memo", MemoDocument.class);
         MemoDocument doc = docFile.getDocument();
-        doc.memos.add(new Memo("invoop","Enigma broke again."));
+        doc.memos.add(new Memo("invoop", "Enigma broke again."));
         docFile.setArchiveFlag();
         instance.pushDocument(result.getEntityID(), docFile);
     }
-    
+
     @Test
     public void testDocumentSingleInstance() throws Exception {
         System.out.println("documentSingleInstance");
         ProviderQuery query = new ProviderQuery("Tehbeard", IStatDataProvider.PLAYER_TYPE, MojangWebAPI.expandUUID("09d770ac7bfe48a2bf6877cbd21c51a1"), false);
         EntityStatBlob result = instance.pullEntityBlob(query);
-        
+
         DocumentRegistry.registerDocument(MemoDocument.class);
         DocumentRegistry.cleanup();
-        DocumentFile docFile = result.getDocument("default","memoSingle", MemoDocument.class);
+        DocumentFile docFile = result.getDocument(DomainPointer.get("default"), "memoSingle", MemoDocument.class);
         MemoDocument doc = docFile.getDocument();
-        doc.memos.add(new Memo("invoop","Buying more glands."));
+        doc.memos.add(new Memo("invoop", "Buying more glands."));
         docFile.setArchiveFlag();
         instance.pushDocument(result.getEntityID(), docFile);
-        for( DocumentFileRef ref : result.cloneForArchive().files){
+        for (DocumentFileRef ref : result.cloneForArchive().files) {
             ref.invalidateRef();
         }
-        
-        
-        docFile = result.getDocument("default","memoSingle", MemoDocument.class);
+
+        docFile = result.getDocument(DomainPointer.get("default"), "memoSingle", MemoDocument.class);
         doc = docFile.getDocument();
         doc.memos.add(new Memo("Tulonsae", "Javadoc the document system please?"));
-        
-        docFile.setArchiveFlag();
-        instance.pushDocument(result.getEntityID(), docFile);
-        
-        for( DocumentFileRef ref : result.cloneForArchive().files){
-            ref.invalidateRef();
-        }
-        
-        
-        docFile = result.getDocument("default","memoSingle", MemoDocument.class);
-        doc = docFile.getDocument();
-        doc.memos.add(new Memo("comet1", "I can haz vet?"));
-        
+
         docFile.setArchiveFlag();
         instance.pushDocument(result.getEntityID(), docFile);
 
-        
-        DocumentHistory history = instance.getDocumentHistory(result.getEntityID(), "default","memoSingle");
-        assertFalse("History returned",history == null);
+        for (DocumentFileRef ref : result.cloneForArchive().files) {
+            ref.invalidateRef();
+        }
+
+        docFile = result.getDocument(DomainPointer.get("default"), "memoSingle", MemoDocument.class);
+        doc = docFile.getDocument();
+        doc.memos.add(new Memo("comet1", "I can haz vet?"));
+
+        docFile.setArchiveFlag();
+        instance.pushDocument(result.getEntityID(), docFile);
+
+        DocumentHistory history = instance.getDocumentHistory(result.getEntityID(), DomainPointer.get("default"), "memoSingle");
+        assertFalse("History returned", history == null);
         assertEquals("Only one entry saved", 1, history.getEntries().size());
     }
-    
 
     /**
      * Test of deleteDocument method, of class IStatDataProvider.
      */
     @Test
     public void testDeleteDocument() {
-        
+
         System.out.println("deleteDocument");
         System.out.println("NOT IMPLEMENETED.");
-        
+
     }
 
     /**

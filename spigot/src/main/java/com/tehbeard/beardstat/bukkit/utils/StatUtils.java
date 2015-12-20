@@ -25,7 +25,7 @@ import com.tehbeard.beardstat.manager.EntityStatManager;
  * @author James
  *
  * Methods that take a {@link Player} object use the this.domain domain, and world provided by the player.
- * modifyXXX methods adjust stats relativly. if you pass in +3, the stat is incremented by 3.
+ * modifyXXX methods adjust stats relatively. if you pass in +3, the stat is incremented by 3.
  * setXXX methods adjust stats absolutely. If you pass 50, the stat is now 50. 
  */
 public class StatUtils {
