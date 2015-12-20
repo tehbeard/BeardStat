@@ -14,10 +14,13 @@ import com.tehbeard.beardstat.Refs;
 import com.tehbeard.beardstat.BeardStatRuntimeException;
 import com.tehbeard.beardstat.DbPlatform;
 import com.tehbeard.beardstat.containers.EntityStatBlob;
+import com.tehbeard.beardstat.containers.meta.CategoryPointer;
+import com.tehbeard.beardstat.containers.meta.DomainPointer;
+import com.tehbeard.beardstat.containers.meta.StatPointer;
+import com.tehbeard.beardstat.containers.meta.WorldPointer;
 import com.tehbeard.beardstat.dataproviders.IStatDataProvider;
 import com.tehbeard.beardstat.dataproviders.ProviderQuery;
 import com.tehbeard.beardstat.dataproviders.ProviderQueryResult;
-import com.tehbeard.beardstat.dataproviders.metadata.StatisticMeta;
 import com.tehbeard.beardstat.manager.OnlineTimeManager.ManagerRecord;
 import java.util.Iterator;
 
@@ -102,7 +105,12 @@ public class EntityStatManager {
                     if (timeRecord != null) {
                         platform.getLogger().log(Level.FINE, "saving time: [Player : {0} , world: {1}, time: {2}]", new Object[]{entityName, timeRecord.world, timeRecord.sessionTime()});
                         if (timeRecord.world != null) {
-                            blob.getStat(Refs.DEFAULT_DOMAIN, timeRecord.world, "stats", "playedfor").incrementStat(timeRecord.sessionTime());
+                            blob.getStat(
+                                    DomainPointer.get(Refs.DEFAULT_DOMAIN), 
+                                    WorldPointer.get(timeRecord.world), 
+                                    CategoryPointer.get("stats"), 
+                                    StatPointer.get("playedfor")
+                            ).incrementStat(timeRecord.sessionTime());
                         }
                     }
                     if (isPlayerOnline(entityName)) {
@@ -119,22 +127,6 @@ public class EntityStatManager {
 
     private boolean isPlayerOnline(String player) {
         return platform.isPlayerOnline(player);
-    }
-
-    public String getLocalizedStatisticName(String gameTag) {
-        StatisticMeta meta = this.backendDatabase.getStatistic(gameTag,false);
-        if(meta!= null){
-            return meta.getLocalizedName();
-        }
-        return gameTag;
-    }
-
-    public String formatStat(String gameTag, int value) {
-        StatisticMeta meta = this.backendDatabase.getStatistic(gameTag,false);
-        if(meta!=null){
-            return meta.formatStat(value);
-        }
-        return "" + value;
     }
 
     public void flush() {

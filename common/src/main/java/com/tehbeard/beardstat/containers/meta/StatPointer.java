@@ -28,6 +28,8 @@ public class StatPointer extends AbstractPointer {
 
     private final String outputStr = "%s";
     
+    private String humanName = "";
+    
     private static Set<StatPointer> pointers = new HashSet<StatPointer>();
 
     private static final Map<Formatting, StatFormatter> formatters = new EnumMap<Formatting, StatFormatter>(Formatting.class);
@@ -134,15 +136,17 @@ public class StatPointer extends AbstractPointer {
         // metres
     }
 
-    public boolean contains(StatPointer pointer) {
+    public boolean isSubPointer(StatPointer pointer) {
         if (!this.name.equals(pointer.name)) {
             return false;
         }
         for (Entry<String, String> e : pointer.classifiers.entrySet()) {
             if ( 
-                    !this.classifiers.containsKey(e.getKey())
-                    || !(e.getValue() == null
-                    || e.getValue().equals(this.classifiers.get(e.getKey())))
+                    !this.classifiers.containsKey(e.getKey())|| 
+                    !(
+                        e.getValue() == null || 
+                        e.getValue().equals(this.classifiers.get(e.getKey()))
+                    )
                 ) {
                 return false;
             }
@@ -150,11 +154,19 @@ public class StatPointer extends AbstractPointer {
         return true;
     }
 
+    public String getHumanName() {
+        return humanName;
+    }
+
+    public void setHumanName(String humanName) {
+        this.humanName = humanName;
+    }
+
     public static Set<StatPointer> filter(String name, Map<String, String> constraints) {
         StatPointer qry = new StatPointer(name, constraints);
         Set<StatPointer> results = new HashSet<StatPointer>();
         for (StatPointer p : pointers) {
-            if (p.contains(qry)) {
+            if (p.isSubPointer(qry)) {
                 results.add(p);
             }
         }

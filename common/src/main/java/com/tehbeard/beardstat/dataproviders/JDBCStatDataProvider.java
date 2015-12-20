@@ -9,11 +9,6 @@ import com.tehbeard.beardstat.containers.StatBlobRecord;
 import com.tehbeard.beardstat.containers.documents.docfile.DocumentFile;
 import com.tehbeard.beardstat.containers.documents.docfile.DocumentFileRef;
 import com.tehbeard.beardstat.identifier.IdentifierService;
-import com.tehbeard.beardstat.dataproviders.metadata.CategoryMeta;
-import com.tehbeard.beardstat.dataproviders.metadata.DomainMeta;
-import com.tehbeard.beardstat.dataproviders.metadata.StatisticMeta;
-import com.tehbeard.beardstat.dataproviders.metadata.StatisticMeta.Formatting;
-import com.tehbeard.beardstat.dataproviders.metadata.WorldMeta;
 import com.tehbeard.utils.sql.DBVersion;
 import com.tehbeard.utils.sql.JDBCDataSource;
 import com.tehbeard.utils.sql.PostUpgrade;
@@ -117,12 +112,6 @@ public abstract class JDBCStatDataProvider extends JDBCDataSource implements ISt
     //Utility
     @SQLScript(SQL_SAVE_UUID)
     protected PreparedStatement setUUID;
-    // default connection related configuration
-    // ID Cache
-    private final Map<String, DomainMeta> domainMetaMap = new HashMap<String, DomainMeta>();
-    private final Map<String, WorldMeta> worldMetaMap = new HashMap<String, WorldMeta>();
-    private final Map<String, CategoryMeta> categoryMetaMap = new HashMap<String, CategoryMeta>();
-    private final Map<String, StatisticMeta> statisticMetaMap = new HashMap<String, StatisticMeta>();
     // Write queue
     private HashMap<Integer, StatBlobRecord> writeCache = new HashMap<Integer, StatBlobRecord>();
     //Configuration/env
@@ -400,7 +389,7 @@ public abstract class JDBCStatDataProvider extends JDBCDataSource implements ISt
     /**
      * Runner used to flush to database async.
      */
-    private Runnable flush = new Runnable() {
+    private final Runnable flush = new Runnable() {
         @Override
         public void run() {
             synchronized (writeCache) {
@@ -423,10 +412,10 @@ public abstract class JDBCStatDataProvider extends JDBCDataSource implements ISt
                             for (Iterator<IStat> it = updateRecord.stats.iterator(); it.hasNext();) {
                                 stat = it.next();
                                 saveEntityData.setInt(1, updateRecord.entityId);
-                                saveEntityData.setInt(2, getDomain(stat.getDomain(), true).getDbId());
-                                saveEntityData.setInt(3, getWorld(stat.getWorld(), true).getDbId());
-                                saveEntityData.setInt(4, getCategory(stat.getCategory(), true).getDbId());
-                                saveEntityData.setInt(5, getStatistic(stat.getStatistic(), true).getDbId());
+                                saveEntityData.setInt(2, stat.getDomain().getId());
+                                saveEntityData.setInt(3, stat.getWorld().getId());
+                                saveEntityData.setInt(4, stat.getCategory().getId());
+                                saveEntityData.setInt(5, stat.getStatistic().getId());
                                 saveEntityData.setInt(6, stat.getValue());
                                 saveEntityData.addBatch();
                             }
@@ -449,11 +438,11 @@ public abstract class JDBCStatDataProvider extends JDBCDataSource implements ISt
                             }
 
                         } catch (SQLException e) {
-                            platform.getLogger().log(Level.WARNING, "entity id: {0}}", new Object[]{updateRecord.entityId});
-                            platform.getLogger().log(Level.WARNING, "domain: {0} :: {1}", new Object[]{stat.getDomain(), getDomain(stat.getDomain(), true).getDbId()});
-                            platform.getLogger().log(Level.WARNING, "world: {0} :: {1}", new Object[]{stat.getWorld(), getWorld(stat.getWorld(), true).getDbId()});
-                            platform.getLogger().log(Level.WARNING, "category: {0} :: {1}", new Object[]{stat.getCategory(), getCategory(stat.getCategory(), true).getDbId()});
-                            platform.getLogger().log(Level.WARNING, "statistic: {0} :: {1}", new Object[]{stat.getStatistic(), getStatistic(stat.getStatistic(), true).getDbId()});
+                            platform.getLogger().log(Level.WARNING, "entity id: {0}}", updateRecord.entityId);
+                            platform.getLogger().log(Level.WARNING, "domain: {0}", stat.getDomain());
+                            platform.getLogger().log(Level.WARNING, "world: {0}", stat.getWorld());
+                            platform.getLogger().log(Level.WARNING, "category: {0}", stat.getCategory());
+                            platform.getLogger().log(Level.WARNING, "statistic: {0}", stat.getStatistic());
                             platform.getLogger().log(Level.WARNING, "Value: {0}", stat.getValue());
                             platform.mysqlError(e, SQL_SAVE_STAT);
                             checkConnection();
@@ -480,96 +469,6 @@ public abstract class JDBCStatDataProvider extends JDBCDataSource implements ISt
         new Thread(this.flush).start();
     }
 
-    @Override
-    public DomainMeta getDomain(String gameTag, boolean create) {
-        String qGameTag = sanitizeTag(gameTag);
-        if (!domainMetaMap.containsKey(qGameTag) && create) {
-            try {
-
-                saveDomain.setString(1, qGameTag);
-                saveDomain.execute();
-                ResultSet rs = saveDomain.getGeneratedKeys();
-                rs.next();
-                domainMetaMap.put(gameTag, new DomainMeta(rs.getInt(1), gameTag));
-                rs.close();
-            } catch (SQLException ex) {
-                platform.mysqlError(ex, SQL_SAVE_DOMAIN);
-            }
-        }
-
-        return domainMetaMap.get(qGameTag);
-    }
-
-    @Override
-    public WorldMeta getWorld(String gameTag, boolean create) {
-
-        if (!worldMetaMap.containsKey(gameTag) && create) {
-            try {
-                saveWorld.setString(1, gameTag);
-                saveWorld.setString(2, gameTag.replaceAll("_", " "));
-                saveWorld.execute();
-                ResultSet rs = saveWorld.getGeneratedKeys();
-                rs.next();
-                worldMetaMap.put(gameTag, new WorldMeta(rs.getInt(1), gameTag, gameTag.replaceAll("_", " ")));
-                rs.close();
-            } catch (SQLException ex) {
-                platform.mysqlError(ex, SQL_SAVE_WORLD + " @ " + gameTag + " cache size: " + worldMetaMap.size());
-            }
-        }
-
-        return worldMetaMap.get(gameTag);
-    }
-
-    @Override
-    public CategoryMeta getCategory(String gameTag, boolean create) {
-        if (!categoryMetaMap.containsKey(gameTag) && create) {
-            try {
-                saveCategory.setString(1, gameTag);
-                saveCategory.execute();
-                ResultSet rs = saveCategory.getGeneratedKeys();
-                rs.next();
-                categoryMetaMap.put(gameTag, new CategoryMeta(rs.getInt(1), gameTag, gameTag.replaceAll("_", " ")));
-                rs.close();
-            } catch (SQLException ex) {
-                platform.mysqlError(ex, SQL_SAVE_CATEGORY);
-            }
-        }
-
-        return categoryMetaMap.get(gameTag);
-    }
-
-    @Override
-    public StatisticMeta getStatistic(String gameTag, boolean create) {
-        if (gameTag == null) {
-            throw new NullPointerException();
-        }
-        if (!statisticMetaMap.containsKey(gameTag) && create) {
-            try {
-                saveStatistic.setString(1, gameTag);
-                saveStatistic.setString(2, IdentifierService.getHumanName(gameTag));
-                saveStatistic.setString(3, Formatting.none.toString().toLowerCase());
-                saveStatistic.execute();
-                ResultSet rs = saveStatistic.getGeneratedKeys();
-                rs.next();
-                statisticMetaMap.put(gameTag, new StatisticMeta(rs.getInt(1), gameTag, gameTag.replaceAll("_", " "), Formatting.none));
-                rs.close();
-            } catch (SQLException ex) {
-                platform.mysqlError(ex, SQL_SAVE_STATISTIC);
-            }
-        }
-
-        return statisticMetaMap.get(gameTag);
-    }
-
-    private String sanitizeTag(String gameTag) {
-        String truncatedName = gameTag.toLowerCase();
-        if (truncatedName.length() > 64) {
-            truncatedName = truncatedName.substring(0, 64);
-        }
-        return truncatedName;
-    }
-
-    
     public final static int MAX_UUID_REQUESTS_PER = 2 * 64;
 
     /**

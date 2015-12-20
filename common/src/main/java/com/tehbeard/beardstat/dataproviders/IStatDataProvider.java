@@ -3,10 +3,6 @@ package com.tehbeard.beardstat.dataproviders;
 import com.tehbeard.beardstat.containers.EntityStatBlob;
 import com.tehbeard.beardstat.containers.documents.DocumentHistory;
 import com.tehbeard.beardstat.containers.documents.docfile.DocumentFile;
-import com.tehbeard.beardstat.dataproviders.metadata.CategoryMeta;
-import com.tehbeard.beardstat.dataproviders.metadata.DomainMeta;
-import com.tehbeard.beardstat.dataproviders.metadata.StatisticMeta;
-import com.tehbeard.beardstat.dataproviders.metadata.WorldMeta;
 
 /**
  * Provides push/pull service for getting and saving stats to a backend storage system.
@@ -71,31 +67,6 @@ public interface IStatDataProvider {
      * Flush any cached data to the backend now, can do so in a seperate thread.
      */
     public void flush();
-
-    /**
-     * Returns the DomainMeta object for the given domain
-     * @param gameTag
-     * @return
-     */
-    public DomainMeta getDomain(String gameTag, boolean create);
-    /**
-     * Returns the WorldMeta object for the given world
-     * @param gameTag
-     * @return
-     */
-    public WorldMeta getWorld(String gameTag, boolean create);
-    /**
-     * Returns the CategoryMeta object for the given category
-     * @param gameTag
-     * @return
-     */
-    public CategoryMeta getCategory(String gameTag, boolean create);
-    /**
-     * Returns the StatisticMeta object for the given statistic
-     * @param gameTag
-     * @return
-     */
-    public StatisticMeta getStatistic(String gameTag, boolean create);
 
     /**
      * Pulls a document from the database
