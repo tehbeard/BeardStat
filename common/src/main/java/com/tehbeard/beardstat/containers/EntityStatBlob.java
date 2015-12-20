@@ -106,11 +106,17 @@ public class EntityStatBlob implements VariableProvider {
      * @return
      */
     public IStat getStat(DomainPointer domain, WorldPointer world, CategoryPointer category, StatPointer statistic) {
-        IStat psn = this.stats.get(domain + "::" + world + "::" + category + "::" + statistic);
-        if (psn != null) {
-            return psn;
+        for(IStat s : this.stats){
+            if(
+                s.getDomain().equals(domain) &&
+                s.getWorld().equals(world) &&
+                s.getCategory().equals(category) &&
+                s.getStatistic().equals(statistic)
+            ){
+                return s;
+            }
         }
-        psn = new StaticStat(domain, world, category, statistic, 0);
+        IStat psn = new StaticStat(domain, world, category, statistic, 0);
         addStat(psn);
         return psn;
     }
@@ -126,50 +132,8 @@ public class EntityStatBlob implements VariableProvider {
      * @param statistic
      * @return
      */
-    public StatVector getStats(String domain, String world, String category, String statistic) {
-        return getStats(domain, world, category, statistic, true);
-    }
-
-    /**
-     * Query this blob for a {@link StatVector}, a {@link StatVector} combines multiple stats into one easy to access object {@link StatVector} supports the use of regex, with the shortcut "*"
-     * to denote all possible values (substituted for ".*" in regex engine) Defaults to readonly mode, any mutators called on this {@link StatVector} will throw {@link IllegalStateException}
-     * if readOnly is true
-     *
-     * @param domain
-     * @param world
-     * @param category
-     * @param statistic
-     * @param readOnly
-     * @return
-     */
     public StatVector getStats(DomainPointer domain, WorldPointer world, CategoryPointer category, StatPointer statistic) {
         throw new UnsupportedOperationException();
-    }
-
-    /**
-     * Query this blob for a {@link StatVector}, a {@link StatVector} combines multiple stats into one easy to access object {@link StatVector} supports the use of regex, with the shortcut "*"
-     * to denote all possible values (substituted for ".*" in regex engine) Defaults to readonly mode, any mutators called on this {@link StatVector} will throw {@link IllegalStateException}
-     * if readOnly is true
-     *
-     * This method differs from other getStats() as it provides direct control of the final regex expression used, domain,world etc are used to populate the respective fields of the returned
-     * StatVector
-     *
-     * @param domain
-     * @param world
-     * @param category
-     * @param statistic
-     * @param regex
-     * @param readOnly
-     * @return
-     */
-    public StatVector getStats(DomainPointer domain, WorldPointer world, CategoryPointer category, StatPointer statistic, String regex, boolean readOnly) {
-        StatVector vector = new StatVector(domain, world, category, statistic, readOnly);
-        for (Entry<String, IStat> e : this.stats.entrySet()) {
-            if (Pattern.matches(regex, e.getKey())) {
-                vector.add(e.getValue());
-            }
-        }
-        return vector;
     }
 
     /**
@@ -178,7 +142,7 @@ public class EntityStatBlob implements VariableProvider {
      * @return
      */
     public Collection<IStat> getStats() {
-        return this.stats.values();
+        return this.stats;
     }
 
     /**
