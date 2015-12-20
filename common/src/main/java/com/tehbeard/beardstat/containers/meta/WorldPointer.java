@@ -65,4 +65,13 @@ public class WorldPointer extends AbstractPointer {
         }
         throw new IllegalStateException("Fell out of loop in get()");
     }
+    
+    public static WorldPointer get(int id){
+        for(WorldPointer p : pointers){
+            if(p.getId() == id){
+                return p;
+            }
+        }
+        throw new IllegalStateException("Fell out of loop in get()");
+    }
 }

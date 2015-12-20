@@ -33,4 +33,12 @@ public class DomainPointer extends AbstractPointer {
         }
         throw new IllegalStateException("Fell out of loop in get()");
     }
+    public static DomainPointer get(int id){
+        for(DomainPointer p : pointers){
+            if(p.getId() == id){
+                return p;
+            }
+        }
+        throw new IllegalStateException("Fell out of loop in get()");
+    }
 }

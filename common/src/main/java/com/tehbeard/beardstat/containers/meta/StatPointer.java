@@ -197,27 +197,12 @@ public class StatPointer extends AbstractPointer {
         throw new IllegalStateException("Fell out of loop in get()");
     }
 
-    public static void main(String[] args) {
-        StatPointer s = StatPointer.get("minecraft:wool_chest", new HashMap<String, String>() {
-            {
-                put("direction", "south");
-                put("color", "red");
-                put("open", "yes");
+    public static StatPointer get(int id){
+        for(StatPointer p : pointers){
+            if(p.getId() == id){
+                return p;
             }
-        });
-        
-        StatPointer.get("minecraft:wool_chest", new HashMap<String, String>() {
-            {
-                put("direction", "south");
-                put("color", "red");
-                put("open", "yes");
-            }
-        });
-        
-               
-
-        System.out.println(s.toTag());
-        System.out.println(pointers);
-        System.out.println(pointers.size());
+        }
+        throw new IllegalStateException("Fell out of loop in get()");
     }
 }
