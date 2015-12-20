@@ -110,7 +110,7 @@ public class StaticStat extends AbstractStat {
     }
 
     @Override
-    public IStat clone() {
+    public IStat copyStat() {
         return new StaticStat(this.getDomain(), this.getWorld(), this.getCategory(), this.getStatistic(), this.value);
     }
 }

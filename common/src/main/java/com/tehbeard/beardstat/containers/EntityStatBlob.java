@@ -78,9 +78,7 @@ public class EntityStatBlob implements VariableProvider {
      * @param stat
      */
     public void addStat(IStat stat) {
-        this.stats.put(
-                stat.getDomain() + "::" + stat.getWorld() + "::" + stat.getCategory() + "::" + stat.getStatistic(),
-                stat);
+        this.stats.add(stat);
         stat.setOwner(this);
     }
 
@@ -154,27 +152,27 @@ public class EntityStatBlob implements VariableProvider {
      * @param statistic
      * @return
      */
-    public boolean hasStat(String domain, String world, String category, String statistic) {
-        return this.stats.containsKey(domain + "::" + world + "::" + category + "::" + statistic);
-
+    public boolean hasStat(DomainPointer domain, WorldPointer world, CategoryPointer category, StatPointer statistic) {
+        IStat s = new StaticStat(domain, world, category, statistic, 0);
+        return this.stats.contains(s);
     }
 
     @Override
     public int resolveVariable(String var) {
-        String[] parts = var.split("\\::");
-        String domain = Refs.DEFAULT_DOMAIN;
-        String world = "*";
-        String cat = "";
-        String stat = "";
+        String[] parts = var.split("::");
+        DomainPointer domain = DomainPointer.get(Refs.DEFAULT_DOMAIN);
+        WorldPointer world = WorldPointer.get(Refs.GLOBAL_WORLD);
+        CategoryPointer cat;
+        StatPointer stat;
         if (parts.length == 4) {
-            domain = parts[0];
-            world = parts[1];
-            cat = parts[2];
-            stat = parts[3];
+            domain = DomainPointer.get(parts[0]);
+            world = WorldPointer.get(parts[1]);
+            cat = CategoryPointer.get(parts[2]);
+            stat = StatPointer.get(parts[3]);
         }
         if (parts.length == 2) {
-            cat = parts[0];
-            stat = parts[1];
+            cat = CategoryPointer.get(parts[0]);
+            stat = StatPointer.get(parts[1]);
         } else {
             throw new IllegalStateException("Attempt to parse invalid varriable " + var);
         }
@@ -197,9 +195,9 @@ public class EntityStatBlob implements VariableProvider {
     public StatBlobRecord cloneForArchive() {
         StatBlobRecord record = new StatBlobRecord(entityId);
 
-        for (IStat stat : this.stats.values()) {
+        for (IStat stat : this.stats) {
             if (stat.isArchive()) {
-                IStat is = stat.clone();
+                IStat is = stat.copyStat();
                 if (is != null) {
                     record.stats.add(is);
                     stat.clearArchive();

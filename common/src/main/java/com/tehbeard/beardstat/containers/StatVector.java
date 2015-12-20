@@ -106,7 +106,7 @@ public class StatVector extends AbstractStat implements Iterable<IStat> {
     }
 
     @Override
-    public IStat clone() {
+    public IStat copyStat() {
         return null;
     }
 

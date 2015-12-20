@@ -160,7 +160,18 @@ public class StatPointer extends AbstractPointer {
         }
         return results;
     }
-    
+    public static StatPointer get(String name) {
+        StatPointer p = new StatPointer(name);
+        if(!pointers.contains(p)){
+            pointers.add(p);
+        }
+        for(StatPointer pp : pointers){
+            if(pp.equals(p)){
+                return pp;
+            }
+        }
+        throw new IllegalStateException("Fell out of loop in get()");
+    }
     public static StatPointer get(String name, Map<String,String> constraints) {
         StatPointer p = new StatPointer(name, constraints);
         if(!pointers.contains(p)){

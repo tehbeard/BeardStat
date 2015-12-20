@@ -54,7 +54,7 @@ public class TimeStat extends AbstractStat {
     }
 
     @Override
-    public IStat clone() {
+    public IStat copyStat() {
         return new StaticStat(getDomain(), getWorld(), getCategory(), getStatistic(), getValue());
     }
     
