@@ -8,7 +8,10 @@ import com.tehbeard.beardstat.containers.IStat;
 import com.tehbeard.beardstat.containers.StatBlobRecord;
 import com.tehbeard.beardstat.containers.documents.docfile.DocumentFile;
 import com.tehbeard.beardstat.containers.documents.docfile.DocumentFileRef;
-import com.tehbeard.beardstat.identifier.IdentifierService;
+import com.tehbeard.beardstat.containers.meta.CategoryPointer;
+import com.tehbeard.beardstat.containers.meta.DomainPointer;
+import com.tehbeard.beardstat.containers.meta.StatPointer;
+import com.tehbeard.beardstat.containers.meta.WorldPointer;
 import com.tehbeard.utils.sql.DBVersion;
 import com.tehbeard.utils.sql.JDBCDataSource;
 import com.tehbeard.utils.sql.PostUpgrade;
@@ -162,12 +165,10 @@ public abstract class JDBCStatDataProvider extends JDBCDataSource implements ISt
         try {
             //Domains
             rs = loadDomainsList.executeQuery();
-            domainMetaMap.clear();
             while (rs.next()) {
-                DomainMeta dm = new DomainMeta(
-                        rs.getInt("domainId"),
-                        rs.getString("domain"));
-                domainMetaMap.put(rs.getString("domain"), dm);
+                DomainPointer
+                        .get(rs.getString("domain"))
+                        .setId(rs.getInt("domainId"));
             }
             rs.close();
         } catch (SQLException e) {
@@ -176,13 +177,11 @@ public abstract class JDBCStatDataProvider extends JDBCDataSource implements ISt
         try {
             //Worlds
             rs = loadWorldsList.executeQuery();
-            worldMetaMap.clear();
             while (rs.next()) {
-                WorldMeta wm = new WorldMeta(
-                        rs.getInt("worldId"),
-                        rs.getString("world"),
-                        rs.getString("name"));
-                worldMetaMap.put(rs.getString("world"), wm);
+                WorldPointer
+                        .get(rs.getString("world"))
+                        .setId(rs.getInt("worldId"));
+                //TODO - set world human name + outputStr
             }
             rs.close();
         } catch (SQLException e) {
@@ -191,13 +190,13 @@ public abstract class JDBCStatDataProvider extends JDBCDataSource implements ISt
         try {
             //Worlds
             rs = loadCategoriesList.executeQuery();
-            categoryMetaMap.clear();
             while (rs.next()) {
-                CategoryMeta cm = new CategoryMeta(
-                        rs.getInt("categoryId"),
-                        rs.getString("category"),
-                        rs.getString("statwrapper"));
-                categoryMetaMap.put(rs.getString("category"), cm);
+                CategoryPointer
+                        .get(rs.getString("category"))
+                        .setId(rs.getInt("categoryId"));
+                
+                        //rs.getString("statwrapper"));
+                //TODO - set outputStr
             }
             rs.close();
         } catch (SQLException e) {
@@ -206,14 +205,11 @@ public abstract class JDBCStatDataProvider extends JDBCDataSource implements ISt
         try {
             //Worlds
             rs = loadStatisticsList.executeQuery();
-            statisticMetaMap.clear();
             while (rs.next()) {
-                StatisticMeta sm = new StatisticMeta(
-                        rs.getInt("statisticId"),
-                        rs.getString("statistic"),
-                        rs.getString("name"),
-                        Formatting.valueOf(rs.getString("formatting")));
-                statisticMetaMap.put(rs.getString("statistic"), sm);
+                StatPointer s = StatPointer.get(rs.getString("statistic"));
+                s.setHumanName(rs.getString("name"));
+                s.setId(rs.getInt("statisticId"));
+                //TODO - Formatting.valueOf(rs.getString("formatting")));
             }
             rs.close();
 
@@ -321,8 +317,13 @@ public abstract class JDBCStatDataProvider extends JDBCDataSource implements ISt
 
                 while (rs.next()) {
                     // `domain`,`world`,`category`,`statistic`,`value`
-                    IStat ps = esb.getStat(rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4));
-                    ps.setValue(rs.getInt(5));
+                    IStat ps = esb.getStat(
+                            DomainPointer.get(rs.getInt("domainId")),
+                            WorldPointer.get(rs.getInt("worldId")),
+                            CategoryPointer.get(rs.getInt("categoryId")),
+                            StatPointer.get(rs.getInt("statisticId"))
+                    );
+                    ps.setValue(rs.getInt("value"));
                     ps.clearArchive();
                 }
                 rs.close();
