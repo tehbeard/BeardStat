@@ -1,5 +1,6 @@
 package com.tehbeard.beardstat.containers.documents;
 
+import com.tehbeard.beardstat.containers.meta.DomainPointer;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +13,7 @@ import java.util.List;
 public class DocumentHistory {
     
     private final List<DocumentHistoryEntry> entries = new ArrayList<DocumentHistoryEntry>();
-    private final String domain;
+    private final DomainPointer domain;
     private final String key;
     private final String latestRevision;
 
@@ -20,14 +21,14 @@ public class DocumentHistory {
      * @param domain
      * @param key
      */
-    public DocumentHistory(String domain, String key,String latestRevision) {
+    public DocumentHistory(DomainPointer domain, String key,String latestRevision) {
         this.domain = domain;
         this.key = key;
         this.latestRevision = latestRevision;
     }
     
 
-    public String getDomain() {
+    public DomainPointer getDomain() {
         return domain;
     }
 

@@ -11,12 +11,12 @@ import com.tehbeard.beardstat.containers.documents.StatDocument;
 import com.tehbeard.beardstat.containers.documents.DocumentRegistry;
 import com.tehbeard.beardstat.containers.documents.IStatDocument;
 import com.tehbeard.beardstat.containers.documents.docfile.DocumentFile;
+import com.tehbeard.beardstat.containers.meta.DomainPointer;
 import com.tehbeard.utils.sql.SQLScript;
 
 import java.io.BufferedWriter;
 import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -185,7 +185,7 @@ public class MysqlStatDataProvider extends JDBCStatDataProvider {
     }
 
     @Override
-    public DocumentFile pullDocument(int entityId, String domain, String key) {
+    public DocumentFile pullDocument(int entityId, DomainPointer domain, String key) {
         DocumentFile file = null;
 
         try {
@@ -313,7 +313,7 @@ public class MysqlStatDataProvider extends JDBCStatDataProvider {
                 //We are inserting a record
                 //`entityId`, `domainId`, `key`, `curRevision`
                 stmtMetaInsert.setInt(1, entityId);
-                stmtMetaInsert.setInt(2, getDomain(document.getDomain(), true).getDbId());
+                stmtMetaInsert.setInt(2, document.getDomain().getId());
                 stmtMetaInsert.setString(3, document.getKey());
                 stmtMetaInsert.setString(4, newRevision);
                 stmtMetaInsert.executeUpdate();
@@ -358,10 +358,10 @@ public class MysqlStatDataProvider extends JDBCStatDataProvider {
     }
 
     @Override
-    public String[] getDocumentKeysInDomain(int entityId, String domain) {
+    public String[] getDocumentKeysInDomain(int entityId, DomainPointer domain) {
         try {
             stmtMetaPoll.setInt(1, entityId);
-            stmtMetaPoll.setInt(2, getDomain(domain, true).getDbId());
+            stmtMetaPoll.setInt(2, domain.getId());
             ResultSet rs = stmtMetaPoll.executeQuery();
 
             List<String> keys = new ArrayList<String>();
@@ -378,7 +378,7 @@ public class MysqlStatDataProvider extends JDBCStatDataProvider {
     }
 
     @Override
-    public DocumentHistory getDocumentHistory(int entityId, String domain, String key) {
+    public DocumentHistory getDocumentHistory(int entityId, DomainPointer domain, String key) {
         ResultSet rs;
         try {
             rs = getDocumentResultSet(entityId, domain, key);
@@ -409,7 +409,7 @@ public class MysqlStatDataProvider extends JDBCStatDataProvider {
     }
 
     @Override
-    public void deleteDocumentRevision(int entityId, String domain, String key, String revision) {
+    public void deleteDocumentRevision(int entityId, DomainPointer domain, String key, String revision) {
         if (revision == null) {
             throw new IllegalArgumentException("Cannot have null revision");
         }
@@ -459,14 +459,13 @@ public class MysqlStatDataProvider extends JDBCStatDataProvider {
      * @return
      * @throws SQLException
      */
-    private ResultSet getDocumentResultSet(int entityId, String domain, String key) throws SQLException {
+    private ResultSet getDocumentResultSet(int entityId, DomainPointer domain, String key) throws SQLException {
         connection.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
         connection.setAutoCommit(false);
-        int domainId = getDomain(domain, true).getDbId();//Get domain int it
         stmtMetaSelect.setInt(1, entityId);
-        stmtMetaSelect.setInt(2, domainId);
+        stmtMetaSelect.setInt(2, domain.getId());
         stmtMetaSelect.setString(3, key);
-        platform.getLogger().log(Level.FINE, "eid: {0}, domainId: {1}, key: {2}", new Object[]{entityId, domainId, key});
+        platform.getLogger().log(Level.FINE, "eid: {0}, domainId: {1}, key: {2}", new Object[]{entityId, domain, key});
         return stmtMetaSelect.executeQuery();
 
     }
@@ -480,7 +479,7 @@ public class MysqlStatDataProvider extends JDBCStatDataProvider {
     }
 
     @Override
-    public void deleteDocument(int entityId, String domain, String key) {
+    public void deleteDocument(int entityId, DomainPointer domain, String key) {
         try {
             ResultSet rs = getDocumentResultSet(entityId, domain, key);
 

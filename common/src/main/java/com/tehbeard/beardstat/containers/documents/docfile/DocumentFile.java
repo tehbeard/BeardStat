@@ -9,6 +9,7 @@ import java.sql.Timestamp;
 import com.tehbeard.beardstat.containers.EntityStatBlob;
 import com.tehbeard.beardstat.containers.documents.IStatDocument;
 import com.tehbeard.beardstat.containers.documents.IStatDynamicDocument;
+import com.tehbeard.beardstat.containers.meta.DomainPointer;
 
 /**
  * Holds metadata for a document
@@ -20,7 +21,7 @@ public class DocumentFile {
     private boolean archive = false;
     private final String revision;
     private final String parentRevision;
-    private final String domain;
+    private final DomainPointer domain;
     private final String key;
     private final IStatDocument document;
     private final Timestamp dateCreated;
@@ -34,7 +35,7 @@ public class DocumentFile {
      * @param key
      * @param document
      */
-    public DocumentFile(String domain,String key,IStatDocument document){
+    public DocumentFile(DomainPointer domain,String key,IStatDocument document){
         this(null,null,domain,key,document,null);
     }
     
@@ -47,7 +48,7 @@ public class DocumentFile {
      * @param document
      * @param dateCreated
      */
-    public DocumentFile(String revision, String parentRevision, String domain, String key, IStatDocument document, Timestamp dateCreated) {
+    public DocumentFile(String revision, String parentRevision, DomainPointer domain, String key, IStatDocument document, Timestamp dateCreated) {
         this.revision = revision;
         this.parentRevision = parentRevision;
         this.domain = domain;
@@ -69,7 +70,7 @@ public class DocumentFile {
      * Domain key for this Document
      * @return
      */
-    public String getDomain() {
+    public DomainPointer getDomain() {
         return domain;
     }
 

@@ -3,6 +3,7 @@ package com.tehbeard.beardstat.dataproviders;
 import com.tehbeard.beardstat.containers.EntityStatBlob;
 import com.tehbeard.beardstat.containers.documents.DocumentHistory;
 import com.tehbeard.beardstat.containers.documents.docfile.DocumentFile;
+import com.tehbeard.beardstat.containers.meta.DomainPointer;
 
 /**
  * Provides push/pull service for getting and saving stats to a backend storage system.
@@ -76,7 +77,7 @@ public interface IStatDataProvider {
      *
      * Documents exist under entity -> domain -> id, this composite key uniquely identifies a document
      */
-    public DocumentFile pullDocument(int entityId, String domain, String key);
+    public DocumentFile pullDocument(int entityId, DomainPointer domain, String key);
 
     /**
      * Pushes a document into storage
@@ -94,7 +95,7 @@ public interface IStatDataProvider {
      * @param key unique id for document
      * @param revision specific revision to delete.
      */
-    public void deleteDocumentRevision(int entityId, String domain, String key, String revision);
+    public void deleteDocumentRevision(int entityId, DomainPointer domain, String key, String revision);
     
     /**
      * Deletes a document, all revisions
@@ -102,7 +103,7 @@ public interface IStatDataProvider {
      * @param domain
      * @param key
      */
-    public void deleteDocument(int entityId, String domain,String key);
+    public void deleteDocument(int entityId, DomainPointer domain,String key);
 
     /**
      * Returns a list of document keys under a specific domain for a entity.
@@ -110,7 +111,7 @@ public interface IStatDataProvider {
      * @param domain
      * @return 
      */
-    public String[] getDocumentKeysInDomain(int entityId, String domain);
+    public String[] getDocumentKeysInDomain(int entityId, DomainPointer domain);
     
     /**
      * Returns the available history for a document.
@@ -119,7 +120,7 @@ public interface IStatDataProvider {
      * @param key - key document is under
      * @return
      */
-    public DocumentHistory getDocumentHistory(int entityId, String domain, String key);
+    public DocumentHistory getDocumentHistory(int entityId, DomainPointer domain, String key);
 
     public boolean generateBackup(String testBackup);
     public boolean restoreBackup(String testBackup);
