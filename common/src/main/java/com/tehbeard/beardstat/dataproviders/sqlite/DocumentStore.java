@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.google.gson.annotations.Expose;
+import com.tehbeard.beardstat.containers.meta.DomainPointer;
 
 /**
  *
@@ -20,25 +21,25 @@ public class DocumentStore {
     @Expose
     Map<String,DocEntry> documents = new HashMap<String, DocEntry>();
     
-    public DocEntry getDocumentData(String domainId,String key){
-        String keyCode = domainId + ":" + key;
+    public DocEntry getDocumentData(DomainPointer domainId,String key){
+        String keyCode = domainId.getGameTag() + ":" + key;
         if(!documents.containsKey(keyCode)){
             documents.put(keyCode, new DocEntry());
         }
         return documents.get(keyCode);
     }
     
-    public String[] getDocsUnderDomain(String domain){
+    public String[] getDocsUnderDomain(DomainPointer domain){
         List<String> s = new ArrayList<String>();
         for(String k : documents.keySet()){
-            if(k.startsWith(domain+":")){
-                s.add(k.replaceAll(domain+":", ""));
+            if(k.startsWith(domain.getGameTag()+":")){
+                s.add(k.replaceAll(domain.getGameTag()+":", ""));
             }
         }
         return s.toArray(new String[0]);
     }
     
-    public void deleteDocument(String domain,String key){
-        documents.remove(domain + ":" + key);
+    public void deleteDocument(DomainPointer domain,String key){
+        documents.remove(domain.getGameTag() + ":" + key);
     }
 }

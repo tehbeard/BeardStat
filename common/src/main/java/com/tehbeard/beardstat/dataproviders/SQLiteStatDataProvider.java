@@ -24,6 +24,7 @@ import com.tehbeard.beardstat.containers.documents.DocumentHistory;
 import com.tehbeard.beardstat.containers.documents.DocumentRegistry;
 import com.tehbeard.beardstat.containers.documents.StatDocument;
 import com.tehbeard.beardstat.containers.documents.docfile.DocumentFile;
+import com.tehbeard.beardstat.containers.meta.DomainPointer;
 import com.tehbeard.beardstat.dataproviders.sqlite.DocEntry;
 import com.tehbeard.beardstat.dataproviders.sqlite.DocEntry.DocRev;
 import com.tehbeard.beardstat.dataproviders.sqlite.DocumentDatabase;
@@ -71,7 +72,7 @@ public class SQLiteStatDataProvider extends JDBCStatDataProvider {
     }
 
     @Override
-    public DocumentFile pullDocument(int entityId, String domain, String key) {
+    public DocumentFile pullDocument(int entityId, DomainPointer domain, String key) {
         DocEntry dbEntry = docDB.getStore(entityId).getDocumentData(domain, key);
         DocRev docRevision = dbEntry.getRevisions().get(dbEntry.getCurrentRevision());
 
@@ -123,7 +124,7 @@ public class SQLiteStatDataProvider extends JDBCStatDataProvider {
     }
 
     @Override
-    public DocumentHistory getDocumentHistory(int entityId, String domain, String key) {
+    public DocumentHistory getDocumentHistory(int entityId, DomainPointer domain, String key) {
         DocEntry d = docDB.getStore(entityId).getDocumentData(domain, key);
         DocumentHistory history = new DocumentHistory(domain, key, d.getCurrentRevision());
         for (Entry<String, DocRev> e : d.getRevisions().entrySet()) {
@@ -133,12 +134,12 @@ public class SQLiteStatDataProvider extends JDBCStatDataProvider {
     }
 
     @Override
-    public void deleteDocument(int entityId, String domain, String key) {
+    public void deleteDocument(int entityId, DomainPointer domain, String key) {
         docDB.getStore(entityId).deleteDocument(domain, key);
     }
 
     @Override
-    public void deleteDocumentRevision(int entityId, String domain, String key, String revision) {
+    public void deleteDocumentRevision(int entityId, DomainPointer domain, String key, String revision) {
         docDB.getStore(entityId).getDocumentData(domain, key).getRevisions().remove(revision);
         if (docDB.getStore(entityId).getDocumentData(domain, key).getRevisions().isEmpty()) {
             deleteDocument(entityId, domain, key);
@@ -146,7 +147,7 @@ public class SQLiteStatDataProvider extends JDBCStatDataProvider {
     }
 
     @Override
-    public String[] getDocumentKeysInDomain(int entityId, String domain) {
+    public String[] getDocumentKeysInDomain(int entityId, DomainPointer domain) {
         return docDB.getStore(entityId).getDocsUnderDomain(domain);
     }
 
