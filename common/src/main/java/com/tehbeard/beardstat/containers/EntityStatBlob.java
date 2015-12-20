@@ -234,8 +234,8 @@ public class EntityStatBlob implements VariableProvider {
      * @param docClass class of the document, used for instantiation if no document found. Pass null to not instantiate a document
      * @return a DocumentFile for a particular revision of the document or null if an error occurs / no document found and docClass is null.
      */
-    public DocumentFile getDocument(String domain, String key,Class<? extends IStatDocument> docClass) {
-        String code = domain + "::" + key;
+    public DocumentFile getDocument(DomainPointer domain, String key,Class<? extends IStatDocument> docClass) {
+        String code = domain.getGameTag() + "::" + key;
         //Load if not cached.
         if (!files.containsKey(code)) {
             DocumentFile docFile = provider.pullDocument(entityId, domain, key);
