@@ -20,6 +20,8 @@ import com.tehbeard.beardstat.containers.meta.StatPointer;
 import com.tehbeard.beardstat.containers.meta.WorldPointer;
 import com.tehbeard.beardstat.dataproviders.IStatDataProvider;
 import com.tehbeard.utils.expressions.VariableProvider;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Represents a collection of statistics bound to an entity Currently only used for Players.
@@ -29,7 +31,7 @@ import com.tehbeard.utils.expressions.VariableProvider;
  */
 public class EntityStatBlob implements VariableProvider {
 
-    private Map<String, IStat> stats = new ConcurrentHashMap<String, IStat>();
+    private Set<IStat> stats = new HashSet<IStat>();
     private int entityId;
     private String name;
     private String type;
@@ -90,8 +92,8 @@ public class EntityStatBlob implements VariableProvider {
      * @param statistic
      * @return
      */
-    public IStat getStat(String world, String category, String statistic) {
-        return getStat(Refs.DEFAULT_DOMAIN, world, category, statistic);
+    public IStat getStat(WorldPointer world, CategoryPointer category, StatPointer statistic) {
+        return getStat(DomainPointer.get(Refs.DEFAULT_DOMAIN), world, category, statistic);
     }
 
     /**
@@ -140,13 +142,8 @@ public class EntityStatBlob implements VariableProvider {
      * @param readOnly
      * @return
      */
-    public StatVector getStats(String domain, String world, String category, String statistic, boolean readOnly) {
-        String pattern = starToRegex(domain);
-        pattern += "\\::" + starToRegex(world);
-        pattern += "\\::" + starToRegex(category);
-        pattern += "\\::" + starToRegex(statistic);
-
-        return getStats(domain, world, category, statistic, pattern, readOnly);
+    public StatVector getStats(DomainPointer domain, WorldPointer world, CategoryPointer category, StatPointer statistic) {
+        throw new UnsupportedOperationException();
     }
 
     /**
@@ -165,8 +162,7 @@ public class EntityStatBlob implements VariableProvider {
      * @param readOnly
      * @return
      */
-    public StatVector getStats(String domain, String world, String category, String statistic, String regex,
-            boolean readOnly) {
+    public StatVector getStats(DomainPointer domain, WorldPointer world, CategoryPointer category, StatPointer statistic, String regex, boolean readOnly) {
         StatVector vector = new StatVector(domain, world, category, statistic, readOnly);
         for (Entry<String, IStat> e : this.stats.entrySet()) {
             if (Pattern.matches(regex, e.getKey())) {
@@ -174,13 +170,6 @@ public class EntityStatBlob implements VariableProvider {
             }
         }
         return vector;
-    }
-
-    private String starToRegex(String s) {
-        if (s.equals("*")) {
-            return "[a-zA-Z0-9_]*";
-        }
-        return s;
     }
 
     /**
