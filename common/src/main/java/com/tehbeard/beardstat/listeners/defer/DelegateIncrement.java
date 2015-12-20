@@ -4,6 +4,10 @@ import net.dragonzone.promise.Delegate;
 import net.dragonzone.promise.Promise;
 
 import com.tehbeard.beardstat.containers.EntityStatBlob;
+import com.tehbeard.beardstat.containers.meta.CategoryPointer;
+import com.tehbeard.beardstat.containers.meta.DomainPointer;
+import com.tehbeard.beardstat.containers.meta.StatPointer;
+import com.tehbeard.beardstat.containers.meta.WorldPointer;
 
 /**
  * Delegate incrementing a stat to a later date
@@ -13,19 +17,19 @@ import com.tehbeard.beardstat.containers.EntityStatBlob;
  */
 public class DelegateIncrement implements Delegate<Void, Promise<EntityStatBlob>> {
 
-    private String domain;
-    private String world;
-    private String category;
-    private String name;
-    private int    increment;
+    private final DomainPointer domain;
+    private final WorldPointer world;
+    private final CategoryPointer category;
+    private final StatPointer name;
+    private final int increment;
 
-    public DelegateIncrement(String domain, String world, String category, String name, int increment) {
+    public DelegateIncrement(DomainPointer domain, WorldPointer world, CategoryPointer category, StatPointer name, int decrement) {
         super();
         this.domain = domain;
         this.world = world;
         this.category = category;
         this.name = name;
-        this.increment = increment;
+        this.increment = decrement;
     }
 
     @Override

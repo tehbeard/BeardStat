@@ -4,6 +4,10 @@ import net.dragonzone.promise.Delegate;
 import net.dragonzone.promise.Promise;
 
 import com.tehbeard.beardstat.containers.EntityStatBlob;
+import com.tehbeard.beardstat.containers.meta.CategoryPointer;
+import com.tehbeard.beardstat.containers.meta.DomainPointer;
+import com.tehbeard.beardstat.containers.meta.StatPointer;
+import com.tehbeard.beardstat.containers.meta.WorldPointer;
 
 /**
  * Delegate the decrementing of a stat to occur at at a later date
@@ -13,13 +17,13 @@ import com.tehbeard.beardstat.containers.EntityStatBlob;
  */
 public class DelegateDecrement implements Delegate<Void, Promise<EntityStatBlob>> {
 
-    private String domain;
-    private String world;
-    private String category;
-    private String name;
-    private int    decrement;
+    private final DomainPointer domain;
+    private final WorldPointer world;
+    private final CategoryPointer category;
+    private final StatPointer name;
+    private final int decrement;
 
-    public DelegateDecrement(String domain, String world, String category, String name, int decrement) {
+    public DelegateDecrement(DomainPointer domain, WorldPointer world, CategoryPointer category, StatPointer name, int decrement) {
         super();
         this.domain = domain;
         this.world = world;
