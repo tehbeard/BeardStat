@@ -1,6 +1,9 @@
 package com.tehbeard.beardstat.bukkit.identifier;
 
+import com.tehbeard.beardstat.containers.meta.StatPointer;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 
 /**
@@ -16,24 +19,17 @@ public interface IIdentifierGenerator {
      * @param id
      * @return
      */
-    public String keyForId(int id,int meta);
-    /**
-     * Get the key for this object w/o any metadata attached
-     * e.g. minecraft:wool instead of minecraft:wool:5
-     * @param id
-     * @return 
-     */
-    public String keyForId(int id);
+    public StatPointer keyForItemstack(ItemStack stack);
     
+    public StatPointer keyForBlock(Block block);
     
     /**
      * Returns the key for an entity
      * @param entity
      * @return
      */
-    public String keyForEntity(Entity entity);
+    public StatPointer keyForEntity(Entity entity);
 
-    public String keyForPotionEffect(PotionEffect effect);
-    
-    public String getHumanName(String key);
+    public StatPointer keyForPotionEffect(PotionEffect effect);
+
 }

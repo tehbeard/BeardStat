@@ -1,17 +1,17 @@
 package com.tehbeard.beardstat.bukkit.identifier;
 
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.List;
 import java.util.Map;
 
-import org.bukkit.entity.Entity;
-import org.bukkit.potion.PotionEffect;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import java.io.BufferedReader;
-import org.apache.commons.lang.ClassUtils;
+import com.tehbeard.beardstat.containers.meta.StatPointer;
+import org.bukkit.block.Block;
+import org.bukkit.entity.Entity;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionEffect;
 
 /**
  * Generates Ids based off the data from
@@ -24,35 +24,6 @@ public class GrahamIdentifierService implements IIdentifierGenerator {
 
     private static Map<String, GrahamItem> items;
 
-    @Override
-    public String keyForId(int id, int meta) {
-        return items.get(id + ":" + meta).getKey();
-    }
-
-    @Override
-    public String keyForId(int id) {
-        return items.get(id + ":" + 0).getKeyNoMeta();
-    }
-
-    @Override
-    public String keyForEntity(Entity entity) {
-        return "minecraft:" + entity.getType().getName();
-    }
-
-    @Override
-    public String keyForPotionEffect(PotionEffect effect) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public String getHumanName(String key) {
-        for(GrahamItem item : items.values()){
-            
-        }
-        return null;
-    }
-
     public static void readData() {
         //Load item data
         Gson gson = new Gson();
@@ -64,6 +35,28 @@ public class GrahamIdentifierService implements IIdentifierGenerator {
         }
         }
 
+    @Override
+    public StatPointer keyForItemstack(ItemStack stack) {
+        GrahamItem item = items.get(stack.getTypeId() + ":" + stack.getData().getData());
+        return StatPointer.get(item.getKey());//TODO - Add classifier handling
+    }
+
+    @Override
+    public StatPointer keyForBlock(Block block) {
+        GrahamItem item = items.get(block.getTypeId() + ":" + block.getState().getData().getData());
+        return StatPointer.get(item.getKey());//TODO - Add classifier handling
+    }
+
+    @Override
+    public StatPointer keyForEntity(Entity entity) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public StatPointer keyForPotionEffect(PotionEffect effect) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
     public class GrahamItem {
         public int type;
         public int meta;
@@ -71,10 +64,6 @@ public class GrahamIdentifierService implements IIdentifierGenerator {
         public String text_type;
 
         public String getKey() {
-            return "minecraft:" + text_type + ":" + meta;
-        }
-
-        public String getKeyNoMeta() {
             return "minecraft:" + text_type;
         }
     }

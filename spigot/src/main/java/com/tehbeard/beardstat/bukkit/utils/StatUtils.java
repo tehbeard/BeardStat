@@ -1,20 +1,22 @@
 package com.tehbeard.beardstat.bukkit.utils;
 
-import java.util.UUID;
 
 import net.dragonzone.promise.Promise;
 
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.Skeleton;
-import org.bukkit.entity.Zombie;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 
 import com.tehbeard.beardstat.Refs;
+import com.tehbeard.beardstat.bukkit.BukkitPlugin;
+import com.tehbeard.beardstat.bukkit.identifier.IIdentifierGenerator;
 import com.tehbeard.beardstat.containers.EntityStatBlob;
-import com.tehbeard.beardstat.bukkit.identifier.IdentifierService;
+import com.tehbeard.beardstat.containers.meta.CategoryPointer;
+import com.tehbeard.beardstat.containers.meta.DomainPointer;
+import com.tehbeard.beardstat.containers.meta.StatPointer;
+import com.tehbeard.beardstat.containers.meta.WorldPointer;
 import com.tehbeard.beardstat.listeners.defer.DelegateDecrement;
 import com.tehbeard.beardstat.listeners.defer.DelegateIncrement;
 import com.tehbeard.beardstat.listeners.defer.DelegateSet;
@@ -31,17 +33,19 @@ import com.tehbeard.beardstat.manager.EntityStatManager;
 public class StatUtils {
 
     private static EntityStatManager manager = null;
+    private static IIdentifierGenerator generator = null;
 
-    public static void setManager(EntityStatManager manager){
-        StatUtils.manager = manager;
+    public static void setManager(BukkitPlugin plugin){
+        StatUtils.generator = plugin.getStatGenerator();
+        StatUtils.manager = plugin.getStatManager();
     }
     
     public static final StatUtils instance = new StatUtils(Refs.DEFAULT_DOMAIN);
 
     
-    private final String domain;
+    private final DomainPointer domain;
     public StatUtils(String domain){
-        this.domain = domain;
+        this.domain = DomainPointer.get(domain);
     }
     
     /**
@@ -51,8 +55,8 @@ public class StatUtils {
      * @param effect
      * @param amount 
      */
-    public void modifyStatPotion(Player player,String category,PotionEffect effect, int amount){
-        modifyStatPlayer(player, category, IdentifierService.getIdForPotionEffect(effect), amount);
+    public void modifyStatPotion(Player player, CategoryPointer category, PotionEffect effect, int amount){
+        modifyStatPlayer(player, category, generator.keyForPotionEffect(effect), amount);
     }
     
     /**
@@ -62,18 +66,8 @@ public class StatUtils {
      * @param entity
      * @param amount
      */
-    public void modifyStatEntity(Player player, String category, Entity entity, int amount){
-        modifyStatPlayer(player, category, IdentifierService.getIdForEntity(entity), amount);
-        //TODO -  Deprecate or add api handle?
-        if (entity instanceof Skeleton) {
-            modifyStatPlayer(player, category, ((Skeleton) entity).getSkeletonType().toString().toLowerCase()+ "_skeleton",amount);
-        }
-
-        if (entity instanceof Zombie) {
-            if (((Zombie) entity).isVillager()) {
-                modifyStatPlayer(player, category, "villager_zombie", amount);
-            }
-        }
+    public void modifyStatEntity(Player player, CategoryPointer category, Entity entity, int amount){
+        modifyStatPlayer(player, category, generator.keyForEntity(entity), amount);
     }
     
     /**
@@ -83,9 +77,8 @@ public class StatUtils {
      * @param statistic
      * @param amount
      */
-    public void setPlayerStat(Player player,String category, String statistic, int amount){
-        set( player, 
-                player.getWorld().getName(), 
+    public void setPlayerStat(Player player,CategoryPointer category, StatPointer statistic, int amount){
+        modifyStatPlayer(player,  
                 category, 
                 statistic,
                 amount);
@@ -98,13 +91,12 @@ public class StatUtils {
      * @param statistic
      * @param amount
      */
-    public void modifyStatPlayer(Player player,String category, String statistic, int amount){
+    public void modifyStatPlayer(Player player, CategoryPointer category, StatPointer statistic, int amount){
         modifyStat(
                 player, 
-                player.getWorld().getName(), 
+                WorldPointer.get(player.getWorld().getName()), 
                 category, 
                 statistic,
-                null, 
                 amount);
     }
 
@@ -115,26 +107,9 @@ public class StatUtils {
      * @param item
      * @param amount
      */
-    public void modifyStatItem(Player player,  String category, ItemStack item, int amount){
-        String baseId = IdentifierService.getIdForItemStack(item);
-        String metaId = IdentifierService.getIdForItemStackWithMeta(item);
-        modifyStat(player, player.getWorld().getName(), category, baseId, metaId, amount);
+    public void modifyStatItem(Player player, CategoryPointer category, ItemStack item, int amount){
+        modifyStatPlayer(player, category, generator.keyForItemstack(item), amount);
         
-    }
-
-    /**
-     * Increment/decrement a stat based on a {@link Block}
-     * @param player
-     * @param category
-     * @param block
-     * @param amount
-     */
-    public void modifyStatBlock(Player player, String category, Block block, int amount){
-        modifyStatBlock(player,
-                player.getWorld().getName(),
-                category,
-                block,
-                amount);
     }
 
     /**
@@ -147,11 +122,8 @@ public class StatUtils {
      * @param amount
      */
     
-    public void modifyStatBlock(Player player, String world, String category, Block block, int amount){
-        String baseId = IdentifierService.getIdForMaterial(block.getType());
-        @SuppressWarnings("deprecation")
-        String metaId = IdentifierService.getIdForMaterial(block.getType(),block.getData());
-        modifyStat(player, world, category, baseId, metaId, amount);
+    public void modifyStatBlock(Player player, CategoryPointer category, Block block, int amount){
+        modifyStatPlayer(player, category, generator.keyForBlock(block), amount);
     }
 
     /**
@@ -164,22 +136,16 @@ public class StatUtils {
      * @param metaId
      * @param amount
      */
-    public void modifyStat(Player player, String world, String category, String baseId, String metaId, int amount){
+    public void modifyStat(Player player, WorldPointer world, CategoryPointer category, StatPointer statistic, int amount){
         boolean inc = (amount > 0);
         int am = Math.abs(amount);
 
         if(inc){
-            increment(player, world, category, baseId, am);
-            if(metaId != null){
-                increment(player, world, category, metaId, am);
-            }
+            increment(player, world, category, statistic, am);
         }
         else
         {
-            decrement(player, world, category, baseId, am);
-            if(metaId != null){
-                decrement(player, world, category, metaId, am);
-            }
+            decrement(player, world, category, statistic, am);
         }
     }
 
@@ -192,7 +158,7 @@ public class StatUtils {
      * @param statistic
      * @param amount
      */
-    public void increment(Player player, String world, String category, String statistic, int amount){
+    public void increment(Player player, WorldPointer world, CategoryPointer category, StatPointer statistic, int amount){
         Promise<EntityStatBlob> blob = manager.getPlayer(player.getName(), player.getUniqueId());
         blob.onResolve(new DelegateIncrement(domain,world,category,statistic,amount));
     }
@@ -200,13 +166,12 @@ public class StatUtils {
     /**
      * Decrements a stat
      * @param player
-     * @param domain
      * @param world
      * @param category
      * @param statistic
      * @param amount
      */
-    public void decrement(Player player, String world, String category, String statistic, int amount){
+    public void decrement(Player player, WorldPointer world, CategoryPointer category, StatPointer statistic, int amount){
         Promise<EntityStatBlob> blob = manager.getPlayer(player.getName(), player.getUniqueId());
         blob.onResolve(new DelegateDecrement(domain,world,category,statistic,amount));
     }
@@ -219,7 +184,7 @@ public class StatUtils {
      * @param statistic
      * @param amount
      */
-    public void set(Player player, String world, String category, String statistic, int amount){
+    public void set(Player player, WorldPointer world, CategoryPointer category, StatPointer statistic, int amount){
         Promise<EntityStatBlob> blob = manager.getPlayer(player.getName(), player.getUniqueId());
         blob.onResolve(new DelegateSet(domain,world,category,statistic,amount));
     }

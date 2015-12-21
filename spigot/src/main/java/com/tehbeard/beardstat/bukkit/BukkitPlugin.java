@@ -34,7 +34,6 @@ import com.tehbeard.beardstat.dataproviders.JDBCStatDataProvider;
 import com.tehbeard.beardstat.dataproviders.MysqlStatDataProvider;
 import com.tehbeard.beardstat.dataproviders.SQLiteStatDataProvider;
 import com.tehbeard.beardstat.bukkit.identifier.HomebrewIdentifierGenerator;
-import com.tehbeard.beardstat.bukkit.identifier.IdentifierService;
 import com.tehbeard.beardstat.bukkit.listeners.StatBlockListener;
 import com.tehbeard.beardstat.bukkit.listeners.StatCraftListener;
 import com.tehbeard.beardstat.bukkit.listeners.StatEntityListener;
@@ -47,6 +46,7 @@ import com.tehbeard.beardstat.LanguagePack;
 import com.tehbeard.beardstat.bukkit.utils.StatUtils;
 import com.tehbeard.beardstat.bukkit.cfg.YamlConfigInjector;
 import com.tehbeard.beardstat.bukkit.commands.Commands;
+import com.tehbeard.beardstat.bukkit.identifier.IIdentifierGenerator;
 
 /**
  * BeardStat Statistic's tracking for the gentleman server
@@ -62,6 +62,12 @@ public class BukkitPlugin extends JavaPlugin implements DbPlatform {
     private EntityStatManager statManager;
     public static StatConfiguration configuration;
     public static WorldManager worldManager;
+    
+    private IIdentifierGenerator generator;
+    
+    public IIdentifierGenerator getStatGenerator(){
+        return this.generator;
+    }
 
     /**
      * Returns the stat manager for use by other plugins
@@ -171,9 +177,9 @@ public class BukkitPlugin extends JavaPlugin implements DbPlatform {
 
         getLogger().info("Loading id mapping");
 
-        StatUtils.setManager(this.statManager);
+        StatUtils.setManager(this);
 
-        IdentifierService.setGenerator(new HomebrewIdentifierGenerator());
+        this.generator = new HomebrewIdentifierGenerator();
 
         getLogger().info("Registering events and collectors");
 
