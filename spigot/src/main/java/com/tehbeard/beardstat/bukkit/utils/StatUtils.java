@@ -40,13 +40,7 @@ public class StatUtils {
         StatUtils.manager = plugin.getStatManager();
     }
     
-    public static final StatUtils instance = new StatUtils(Refs.DEFAULT_DOMAIN);
-
-    
-    private final DomainPointer domain;
-    public StatUtils(String domain){
-        this.domain = DomainPointer.get(domain);
-    }
+    public static final StatUtils instance = new StatUtils();
     
     /**
      * Increment/decrement a stat based on a {@link PotionEffect}
@@ -160,7 +154,7 @@ public class StatUtils {
      */
     public void increment(Player player, WorldPointer world, CategoryPointer category, StatPointer statistic, int amount){
         Promise<EntityStatBlob> blob = manager.getPlayer(player.getName(), player.getUniqueId());
-        blob.onResolve(new DelegateIncrement(domain,world,category,statistic,amount));
+        blob.onResolve(new DelegateIncrement(Refs.DEFAULT_DOMAIN,world,category,statistic,amount));
     }
 
     /**
@@ -173,7 +167,7 @@ public class StatUtils {
      */
     public void decrement(Player player, WorldPointer world, CategoryPointer category, StatPointer statistic, int amount){
         Promise<EntityStatBlob> blob = manager.getPlayer(player.getName(), player.getUniqueId());
-        blob.onResolve(new DelegateDecrement(domain,world,category,statistic,amount));
+        blob.onResolve(new DelegateDecrement(Refs.DEFAULT_DOMAIN,world,category,statistic,amount));
     }
     
     /**
@@ -186,7 +180,7 @@ public class StatUtils {
      */
     public void set(Player player, WorldPointer world, CategoryPointer category, StatPointer statistic, int amount){
         Promise<EntityStatBlob> blob = manager.getPlayer(player.getName(), player.getUniqueId());
-        blob.onResolve(new DelegateSet(domain,world,category,statistic,amount));
+        blob.onResolve(new DelegateSet(Refs.DEFAULT_DOMAIN,world,category,statistic,amount));
     }
     
     

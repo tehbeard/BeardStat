@@ -1,5 +1,10 @@
 package com.tehbeard.beardstat;
 
+import com.tehbeard.beardstat.containers.meta.CategoryPointer;
+import com.tehbeard.beardstat.containers.meta.DomainPointer;
+import com.tehbeard.beardstat.containers.meta.StatPointer;
+import com.tehbeard.beardstat.containers.meta.WorldPointer;
+
 /**
  *
  * @author James
@@ -9,8 +14,8 @@ public class Refs {
         public static final String PERM_COMMAND_PLAYED_OTHER = "stat.command.played.other";
         public static final String PERM_COMMAND_STAT_OTHER = "stat.command.stat.other";
         // Default values for domain and world
-        public static final String DEFAULT_DOMAIN = "default";
-        public static final String GLOBAL_WORLD = "__global__";
+        public static final DomainPointer DEFAULT_DOMAIN = DomainPointer.get("default");
+        public static final WorldPointer GLOBAL_WORLD = WorldPointer.get("__global__");
 
         //Track types
         public static final String TRACK_BLOCK_PLACE = "block_place";
@@ -36,6 +41,27 @@ public class Refs {
         public static final String TRACK_PLAYER_EXP = "player_exp";
         public static final String TRACK_PLAYER_CONSUME = "player_consume";
         public static final String TRACK_PLAYER_TIME = "player_time";
+        
+        //Categories
+        public static final CategoryPointer CAT_ITEM_DROP = CategoryPointer.get("itemdrop");
+        public static final CategoryPointer CAT_STAT = CategoryPointer.get("stats");
+        public static final CategoryPointer CAT_FISHING = CategoryPointer.get("fishing");
+    
+        public static final StatPointer STAT_CHAT_LETTERS = StatPointer.get("chatletters");
+        public static final StatPointer STAT_CHAT = StatPointer.get("chat");
+        
+        public static final StatPointer STAT_ARMSWING = StatPointer.get("armswing");
+        
+        public static final StatPointer STAT_LOGIN_FIRST = StatPointer.get("firstlogin");
+        public static final StatPointer STAT_LOGIN_LAST = StatPointer.get("lastlogin");
+        public static final StatPointer STAT_LOGIN = StatPointer.get("login");
+        public static final StatPointer STAT_LOGOUT_LAST = StatPointer.get("lastlogout");
+        
+        public static final StatPointer STAT_FISH_CAUGHT = StatPointer.get("fishcaught");
+        
+        public static final StatPointer STAT_PLAYER_KICKS = StatPointer.get("kicks");
+        
+        public static final StatPointer STAT_MOVE = StatPointer.get("move");
         
         
     }

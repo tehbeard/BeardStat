@@ -64,6 +64,7 @@ import com.tehbeard.beardstat.bukkit.utils.StatUtils;
  *
  */
 public class StatPlayerListener extends StatListener {
+    
 
     public StatPlayerListener(EntityStatManager playerStatManager, BukkitPlugin plugin) {
         super(playerStatManager, plugin);
@@ -76,27 +77,38 @@ public class StatPlayerListener extends StatListener {
         }
 
         if (event.getAnimationType() == PlayerAnimationType.ARM_SWING) {
-            StatUtils.instance.modifyStatPlayer(event.getPlayer(), "stats", "armswing", 1);
+            StatUtils.instance.modifyStatPlayer(event.getPlayer(), Refs.CAT_STAT, Refs.STAT_ARMSWING, 1);
         }
 
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onPlayerJoin(final PlayerJoinEvent event) {
-        StatUtils.instance.modifyStatPlayer(event.getPlayer(), "stats", "login",1);
-        StatUtils.instance.set(event.getPlayer(), Refs.GLOBAL_WORLD, "stats", "lastlogin", (int) (System.currentTimeMillis() / 1000L));
-        StatUtils.instance.modifyStatPlayer(event.getPlayer(), "stats", "lastlogin",
-                (int) (System.currentTimeMillis() / 1000L));
+        StatUtils.instance.modifyStatPlayer(event.getPlayer(), Refs.CAT_STAT, Refs.STAT_LOGIN,1);
+        StatUtils.instance.set(
+                event.getPlayer(), 
+                Refs.GLOBAL_WORLD, 
+                Refs.CAT_STAT, 
+                Refs.STAT_LOGIN_LAST, 
+                (int) (System.currentTimeMillis() / 1000L)
+        );
+        StatUtils.instance.modifyStatPlayer(
+                event.getPlayer(), 
+                Refs.CAT_STAT, 
+                Refs.STAT_LOGIN_LAST,
+                (int) (System.currentTimeMillis() / 1000L)
+        );
 
         //Special case for first join
-        getPlayerStatManager().getPlayer(event.getPlayer().getName(), event.getPlayer().getUniqueId())
-        .onResolve(new Delegate<Void, Promise<EntityStatBlob>>() {
-
+        getPlayerStatManager().getPlayer(
+                event.getPlayer().getName(), 
+                event.getPlayer().getUniqueId()
+        ).onResolve(new Delegate<Void, Promise<EntityStatBlob>>() {
             @Override
             public <P extends Promise<EntityStatBlob>> Void invoke(P params) {
 
-                if (!params.getValue().hasStat(Refs.DEFAULT_DOMAIN, Refs.GLOBAL_WORLD, "stats", "firstlogin")) {
-                    params.getValue().getStat(Refs.DEFAULT_DOMAIN, Refs.GLOBAL_WORLD, "stats", "firstlogin")
+                if (!params.getValue().hasStat(Refs.DEFAULT_DOMAIN, Refs.GLOBAL_WORLD, Refs.CAT_STAT, Refs.STAT_LOGIN_FIRST)) {
+                    params.getValue().getStat(Refs.DEFAULT_DOMAIN, Refs.GLOBAL_WORLD, Refs.CAT_STAT, Refs.STAT_LOGIN_FIRST)
                     .setValue((int) (event.getPlayer().getFirstPlayed() / 1000L));
 
                 }
@@ -105,7 +117,10 @@ public class StatPlayerListener extends StatListener {
             }
         });
 
-        OnlineTimeManager.setRecord(event.getPlayer().getName(), event.getPlayer().getWorld().getName());
+        OnlineTimeManager.setRecord(
+                event.getPlayer().getName(), 
+                event.getPlayer().getWorld().getName()
+        );
 
     }
 
@@ -114,8 +129,18 @@ public class StatPlayerListener extends StatListener {
         if ((event.isCancelled() == false)) {
             int len = event.getMessage().length();
 
-            StatUtils.instance.modifyStatPlayer(event.getPlayer(), "stats", "chatletters", len);
-            StatUtils.instance.modifyStatPlayer(event.getPlayer(), "stats", "chat", 1);
+            StatUtils.instance.modifyStatPlayer(
+                    event.getPlayer(), 
+                    Refs.CAT_STAT, 
+                    Refs.STAT_CHAT_LETTERS, 
+                    len
+            );
+            StatUtils.instance.modifyStatPlayer(
+                    event.getPlayer(), 
+                    Refs.CAT_STAT, 
+                    Refs.STAT_CHAT, 
+                    1
+            );
 
         }
     }
@@ -125,7 +150,12 @@ public class StatPlayerListener extends StatListener {
         if (event.isCancelled() || !shouldTrackPlayer(event.getPlayer(), Refs.TRACK_ITEM_DROP)) {
             return;
         }
-        StatUtils.instance.modifyStatItem(event.getPlayer(), "itemdrop", event.getItemDrop().getItemStack(), event.getItemDrop().getItemStack().getAmount());
+        StatUtils.instance.modifyStatItem(
+                event.getPlayer(), 
+                Refs.CAT_ITEM_DROP, 
+                event.getItemDrop().getItemStack(), 
+                event.getItemDrop().getItemStack().getAmount()
+        );
 
     }
 
@@ -137,17 +167,32 @@ public class StatPlayerListener extends StatListener {
 
         switch(event.getState()) {
         case CAUGHT_FISH:
-            StatUtils.instance.modifyStatPlayer(event.getPlayer(), "stats", "fishcaught", 1);
+            StatUtils.instance.modifyStatPlayer(
+                    event.getPlayer(), 
+                    Refs.CAT_STAT, 
+                    Refs.STAT_FISH_CAUGHT,
+                    1
+            );
             if(event.getCaught() instanceof Item){
                 Item item = (Item) event.getCaught();
                 item.getItemStack();
-                StatUtils.instance.modifyStatItem(event.getPlayer(), "fishing", item.getItemStack(), item.getItemStack().getAmount());
+                StatUtils.instance.modifyStatItem(
+                        event.getPlayer(), 
+                        Refs.CAT_FISHING, 
+                        item.getItemStack(), 
+                        item.getItemStack().getAmount()
+                );
             }
             break;
         case CAUGHT_ENTITY:
             //Prevent Item triggering twice??
             if(event.getCaught() instanceof Item == false){
-                StatUtils.instance.modifyStatEntity(event.getPlayer(), "fishing",event.getCaught(),1);
+                StatUtils.instance.modifyStatEntity(
+                        event.getPlayer(), 
+                        Refs.CAT_FISHING,
+                        event.getCaught(),
+                        1
+                );
             }
             break;
         case FAILED_ATTEMPT:
@@ -166,9 +211,25 @@ public class StatPlayerListener extends StatListener {
     @EventHandler(priority = EventPriority.MONITOR)
     public void onPlayerKick(PlayerKickEvent event) {
         if (event.isCancelled() == false) {
-            StatUtils.instance.modifyStatPlayer(event.getPlayer(), "stats", "kicks", 1);
-            StatUtils.instance.modifyStatPlayer(event.getPlayer(), "stats", "lastlogout", (int) (System.currentTimeMillis() / 1000L));
-            StatUtils.instance.set(event.getPlayer(), Refs.GLOBAL_WORLD, "stats", "lastlogout", (int) (System.currentTimeMillis() / 1000L));
+            StatUtils.instance.modifyStatPlayer(
+                    event.getPlayer(), 
+                    Refs.CAT_STAT, 
+                    Refs.STAT_PLAYER_KICKS, 
+                    1
+            );
+            StatUtils.instance.modifyStatPlayer(
+                    event.getPlayer(), 
+                    Refs.CAT_STAT, 
+                    Refs.STAT_LOGOUT_LAST, 
+                    (int) (System.currentTimeMillis() / 1000L)
+            );
+            StatUtils.instance.set(
+                    event.getPlayer(), 
+                    Refs.GLOBAL_WORLD, 
+                    Refs.CAT_STAT, 
+                    Refs.STAT_LOGOUT_LAST, 
+                    (int) (System.currentTimeMillis() / 1000L)
+            );
             addTimeOnlineAndWipe(event.getPlayer());
         }
 
@@ -176,9 +237,19 @@ public class StatPlayerListener extends StatListener {
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onPlayerQuit(PlayerQuitEvent event) {
-        StatUtils.instance.set(event.getPlayer(), Refs.GLOBAL_WORLD, "stats", "lastlogout", (int) (System.currentTimeMillis() / 1000L));
-        StatUtils.instance.modifyStatPlayer(event.getPlayer(), "stats", "lastlogout",
-                (int) ((new Date()).getTime() / 1000L));
+        StatUtils.instance.set(
+                event.getPlayer(), 
+                Refs.GLOBAL_WORLD, 
+                Refs.CAT_STAT, 
+                Refs.STAT_LOGOUT_LAST, 
+                (int) (System.currentTimeMillis() / 1000L)
+        );
+        StatUtils.instance.modifyStatPlayer(
+                event.getPlayer(), 
+                Refs.CAT_STAT, 
+                Refs.STAT_LOGOUT_LAST,
+                (int) ((new Date()).getTime() / 1000L)
+        );
         addTimeOnlineAndWipe(event.getPlayer());
 
     }
@@ -202,7 +273,12 @@ public class StatPlayerListener extends StatListener {
             if (from.getWorld().equals(to.getWorld())) {
                 final double distance = from.distance(to);
                 if (distance < 8) {
-                    StatUtils.instance.modifyStatPlayer(event.getPlayer(), "stats", "move", (int) Math.ceil(distance));
+                    StatUtils.instance.modifyStatPlayer(
+                            event.getPlayer(), 
+                            Refs.CAT_STAT, 
+                            Refs.STAT_MOVE, 
+                            (int) Math.ceil(distance)
+                    );
                 }
             }
         }
@@ -221,7 +297,7 @@ public class StatPlayerListener extends StatListener {
     @EventHandler(priority = EventPriority.MONITOR)
     public void onPlayerPortal(PlayerPortalEvent event) {
         if (event.isCancelled() == false) {
-            StatUtils.instance.modifyStatPlayer(event.getPlayer(), "stats", "portal", 1);
+            StatUtils.instance.modifyStatPlayer(event.getPlayer(), Refs.CAT_STAT, "portal", 1);
         }
     }
 
@@ -233,7 +309,7 @@ public class StatPlayerListener extends StatListener {
             if (teleportCause == TeleportCause.ENDER_PEARL) {
                 StatUtils.instance.modifyStatPlayer(event.getPlayer(), "itemuse", "enderpearl", 1);
             }
-            StatUtils.instance.modifyStatPlayer(event.getPlayer(), "stats", "teleport", 1);
+            StatUtils.instance.modifyStatPlayer(event.getPlayer(), Refs.CAT_STAT, "teleport", 1);
         }
     }
 
@@ -242,7 +318,7 @@ public class StatPlayerListener extends StatListener {
         if (event.isCancelled() || !shouldTrackPlayer(event.getPlayer(),Refs.TRACK_PLAYER_BUCKET)) {
             return;
         }
-        StatUtils.instance.modifyStatPlayer(event.getPlayer(), "stats", "fill" + event.getBucket().toString().toLowerCase().replace("_", ""), 1);
+        StatUtils.instance.modifyStatPlayer(event.getPlayer(), Refs.CAT_STAT, "fill" + event.getBucket().toString().toLowerCase().replace("_", ""), 1);
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
@@ -251,7 +327,7 @@ public class StatPlayerListener extends StatListener {
             return;
         }
 
-        StatUtils.instance.modifyStatPlayer(event.getPlayer(), "stats", "empty" + event.getBucket().toString().toLowerCase().replace("_", ""), 1);
+        StatUtils.instance.modifyStatPlayer(event.getPlayer(), Refs.CAT_STAT, "empty" + event.getBucket().toString().toLowerCase().replace("_", ""), 1);
 
     }
 
@@ -342,7 +418,7 @@ public class StatPlayerListener extends StatListener {
                 StatUtils.instance.modifyStatBlock(event.getPlayer(), "itemuse", clickedBlock, 1);
             }
             if (clickedBlock.getType().equals(Material.CHEST)) {
-                StatUtils.instance.modifyStatPlayer(event.getPlayer(), "stats", "openchest", 1);
+                StatUtils.instance.modifyStatPlayer(event.getPlayer(), Refs.CAT_STAT, "openchest", 1);
             }
             if (clickedBlock.getType().equals(Material.FLOWER_POT) && (action == Action.RIGHT_CLICK_BLOCK)
                     && (clickedBlock.getData() == 0)) {
@@ -408,7 +484,7 @@ public class StatPlayerListener extends StatListener {
         if (timeRecord.world == null) {
             return;
         }
-        StatUtils.instance.increment(player, timeRecord.world, "stats", "playedfor", timeRecord.sessionTime());
+        StatUtils.instance.increment(player, timeRecord.world, Refs.CAT_STAT, "playedfor", timeRecord.sessionTime());
         OnlineTimeManager.wipeRecord(player.getName());
 
     }
