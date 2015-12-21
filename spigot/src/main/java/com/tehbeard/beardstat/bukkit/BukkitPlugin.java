@@ -40,7 +40,6 @@ import com.tehbeard.beardstat.bukkit.listeners.StatPlayerListener;
 import com.tehbeard.beardstat.bukkit.listeners.StatVehicleListener;
 import com.tehbeard.beardstat.manager.EntityStatManager;
 import com.tehbeard.beardstat.manager.OnlineTimeManager;
-import com.tehbeard.beardstat.bukkit.utils.BukkitHumanNameGenerator;
 import com.tehbeard.beardstat.LanguagePack;
 import com.tehbeard.beardstat.bukkit.utils.StatUtils;
 import com.tehbeard.beardstat.bukkit.cfg.YamlConfigInjector;
@@ -98,8 +97,6 @@ public class BukkitPlugin extends JavaPlugin implements DbPlatform {
     public void onEnable() {
 
         getLogger().info("Starting BeardStat");
-
-        BukkitHumanNameGenerator.init();
 
         // load language file from jar and from data folder
         try {
