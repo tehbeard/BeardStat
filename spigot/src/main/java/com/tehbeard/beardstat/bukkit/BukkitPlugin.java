@@ -33,7 +33,6 @@ import com.tehbeard.beardstat.dataproviders.IStatDataProvider;
 import com.tehbeard.beardstat.dataproviders.JDBCStatDataProvider;
 import com.tehbeard.beardstat.dataproviders.MysqlStatDataProvider;
 import com.tehbeard.beardstat.dataproviders.SQLiteStatDataProvider;
-import com.tehbeard.beardstat.bukkit.identifier.HomebrewIdentifierGenerator;
 import com.tehbeard.beardstat.bukkit.listeners.StatBlockListener;
 import com.tehbeard.beardstat.bukkit.listeners.StatCraftListener;
 import com.tehbeard.beardstat.bukkit.listeners.StatEntityListener;
@@ -46,6 +45,7 @@ import com.tehbeard.beardstat.LanguagePack;
 import com.tehbeard.beardstat.bukkit.utils.StatUtils;
 import com.tehbeard.beardstat.bukkit.cfg.YamlConfigInjector;
 import com.tehbeard.beardstat.bukkit.commands.Commands;
+import com.tehbeard.beardstat.bukkit.identifier.GrahamIdentifierService;
 import com.tehbeard.beardstat.bukkit.identifier.IIdentifierGenerator;
 
 /**
@@ -99,14 +99,6 @@ public class BukkitPlugin extends JavaPlugin implements DbPlatform {
 
         getLogger().info("Starting BeardStat");
 
-        // Read in the metadata file from jar and from data folder
-        HomebrewIdentifierGenerator.readData(getResource("metadata.txt"));
-
-        try {
-            HomebrewIdentifierGenerator.readData(new FileInputStream(new File(getDataFolder(), "metadata.txt")));
-        } catch (FileNotFoundException e) {
-            getLogger().warning("No External metadata file detected");
-        }
         BukkitHumanNameGenerator.init();
 
         // load language file from jar and from data folder
@@ -179,7 +171,7 @@ public class BukkitPlugin extends JavaPlugin implements DbPlatform {
 
         StatUtils.setManager(this);
 
-        this.generator = new HomebrewIdentifierGenerator();
+        this.generator = new GrahamIdentifierService();
 
         getLogger().info("Registering events and collectors");
 
