@@ -106,7 +106,7 @@ public class EntityStatManager {
                         platform.getLogger().log(Level.FINE, "saving time: [Player : {0} , world: {1}, time: {2}]", new Object[]{entityName, timeRecord.world, timeRecord.sessionTime()});
                         if (timeRecord.world != null) {
                             blob.getStat(
-                                    DomainPointer.get(Refs.DEFAULT_DOMAIN), 
+                                    Refs.DEFAULT_DOMAIN, 
                                     WorldPointer.get(timeRecord.world), 
                                     CategoryPointer.get("stats"), 
                                     StatPointer.get("playedfor")

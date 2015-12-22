@@ -3,12 +3,9 @@ package com.tehbeard.beardstat.containers;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.regex.Pattern;
 
 import com.tehbeard.beardstat.Refs;
 import com.tehbeard.beardstat.containers.documents.IStatDocument;
@@ -91,7 +88,7 @@ public class EntityStatBlob implements VariableProvider {
      * @return
      */
     public IStat getStat(WorldPointer world, CategoryPointer category, StatPointer statistic) {
-        return getStat(DomainPointer.get(Refs.DEFAULT_DOMAIN), world, category, statistic);
+        return getStat(Refs.DEFAULT_DOMAIN, world, category, statistic);
     }
 
     /**
@@ -160,8 +157,8 @@ public class EntityStatBlob implements VariableProvider {
     @Override
     public int resolveVariable(String var) {
         String[] parts = var.split("::");
-        DomainPointer domain = DomainPointer.get(Refs.DEFAULT_DOMAIN);
-        WorldPointer world = WorldPointer.get(Refs.GLOBAL_WORLD);
+        DomainPointer domain = Refs.DEFAULT_DOMAIN;
+        WorldPointer world = Refs.GLOBAL_WORLD;
         CategoryPointer cat;
         StatPointer stat;
         if (parts.length == 4) {
