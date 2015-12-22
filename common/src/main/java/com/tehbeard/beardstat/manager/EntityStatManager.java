@@ -108,7 +108,7 @@ public class EntityStatManager {
                             blob.getStat(
                                     Refs.DEFAULT_DOMAIN, 
                                     WorldPointer.get(timeRecord.world), 
-                                    CategoryPointer.get("stats"), 
+                                    Refs.CAT_STAT, 
                                     StatPointer.get("playedfor")
                             ).incrementStat(timeRecord.sessionTime());
                         }
