@@ -136,13 +136,13 @@ public class StatPointer extends AbstractPointer {
         // metres
     }
 
-    public boolean isSubPointer(StatPointer pointer) {
-        if (!this.name.equals(pointer.name)) {
+    public boolean isSubPointerOf(StatPointer query) {
+        if (!this.name.equals(query.name)) {
             return false;
         }
-        for (Entry<String, String> e : pointer.classifiers.entrySet()) {
+        for (Entry<String, String> e : query.classifiers.entrySet()) {
             if ( 
-                    !this.classifiers.containsKey(e.getKey())|| 
+                    !this.classifiers.containsKey(e.getKey())|| //We do not have a key in the provided
                     !(
                         e.getValue() == null || 
                         e.getValue().equals(this.classifiers.get(e.getKey()))
@@ -166,7 +166,7 @@ public class StatPointer extends AbstractPointer {
         StatPointer qry = new StatPointer(name, constraints);
         Set<StatPointer> results = new HashSet<StatPointer>();
         for (StatPointer p : pointers) {
-            if (p.isSubPointer(qry)) {
+            if (p.isSubPointerOf(qry)) {
                 results.add(p);
             }
         }
