@@ -44,8 +44,28 @@ public class Refs {
         
         //Categories
         public static final CategoryPointer CAT_ITEM_DROP = CategoryPointer.get("itemdrop");
+        public static final CategoryPointer CAT_ITEM_PICKUP = CategoryPointer.get("itempickup");
+        public static final CategoryPointer CAT_ITEM_USE = CategoryPointer.get("itemuse");
+        
+        public static final CategoryPointer CAT_FILL = CategoryPointer.get("fill");
+        public static final CategoryPointer CAT_EMPTY = CategoryPointer.get("empty");
+        
         public static final CategoryPointer CAT_STAT = CategoryPointer.get("stats");
         public static final CategoryPointer CAT_FISHING = CategoryPointer.get("fishing");
+        public static final CategoryPointer CAT_INTERACT = CategoryPointer.get("interact");
+        
+        public static final CategoryPointer CAT_DYE = CategoryPointer.get("dye");
+        
+        public static final CategoryPointer CAT_DYE_WOLF = CategoryPointer.get("wolfdye");
+        
+        public static final CategoryPointer CAT_PLANT = CategoryPointer.get("plant");
+        
+        public static final CategoryPointer CAT_XP = CategoryPointer.get("exp");
+        
+        public static final CategoryPointer CAT_SHEAR = CategoryPointer.get("sheared");
+        public static final CategoryPointer CAT_ENCHANT = CategoryPointer.get("enchant");
+        
+        public static final CategoryPointer CAT_CONSUME = CategoryPointer.get("consume");
     
         public static final StatPointer STAT_CHAT_LETTERS = StatPointer.get("chatletters");
         public static final StatPointer STAT_CHAT = StatPointer.get("chat");

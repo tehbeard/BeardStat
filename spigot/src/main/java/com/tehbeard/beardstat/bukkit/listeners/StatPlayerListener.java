@@ -56,6 +56,9 @@ import com.tehbeard.beardstat.manager.EntityStatManager;
 import com.tehbeard.beardstat.manager.OnlineTimeManager;
 import com.tehbeard.beardstat.manager.OnlineTimeManager.ManagerRecord;
 import com.tehbeard.beardstat.bukkit.utils.StatUtils;
+import com.tehbeard.beardstat.containers.meta.CategoryPointer;
+import com.tehbeard.beardstat.containers.meta.StatPointer;
+import com.tehbeard.beardstat.containers.meta.WorldPointer;
 
 /**
  * Calls the stat manager to trigger events
@@ -290,14 +293,14 @@ public class StatPlayerListener extends StatListener {
             return;
         }
 
-        StatUtils.instance.modifyStatItem(event.getPlayer(), "itempickup", event.getItem().getItemStack(), event.getItem().getItemStack().getAmount());
+        StatUtils.instance.modifyStatItem(event.getPlayer(), Refs.CAT_ITEM_PICKUP, event.getItem().getItemStack(), event.getItem().getItemStack().getAmount());
 
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onPlayerPortal(PlayerPortalEvent event) {
         if (event.isCancelled() == false) {
-            StatUtils.instance.modifyStatPlayer(event.getPlayer(), Refs.CAT_STAT, "portal", 1);
+            StatUtils.instance.modifyStatPlayer(event.getPlayer(), Refs.CAT_STAT, StatPointer.get("portal"), 1); //TODO - namespace?
         }
     }
 
@@ -307,9 +310,9 @@ public class StatPlayerListener extends StatListener {
             final TeleportCause teleportCause = event.getCause();
 
             if (teleportCause == TeleportCause.ENDER_PEARL) {
-                StatUtils.instance.modifyStatPlayer(event.getPlayer(), "itemuse", "enderpearl", 1);
+                StatUtils.instance.modifyStatItem(event.getPlayer(), Refs.CAT_ITEM_USE, new ItemStack(Material.ENDER_PEARL), 1);
             }
-            StatUtils.instance.modifyStatPlayer(event.getPlayer(), Refs.CAT_STAT, "teleport", 1);
+            StatUtils.instance.modifyStatPlayer(event.getPlayer(), Refs.CAT_STAT, StatPointer.get("teleport"), 1); //TODO - namespace?
         }
     }
 
@@ -318,7 +321,9 @@ public class StatPlayerListener extends StatListener {
         if (event.isCancelled() || !shouldTrackPlayer(event.getPlayer(),Refs.TRACK_PLAYER_BUCKET)) {
             return;
         }
-        StatUtils.instance.modifyStatPlayer(event.getPlayer(), Refs.CAT_STAT, "fill" + event.getBucket().toString().toLowerCase().replace("_", ""), 1);
+        StatUtils.instance.modifyStatItem(event.getPlayer(), Refs.CAT_FILL, 
+                new ItemStack(event.getBucket())
+                , 1);
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
@@ -327,7 +332,9 @@ public class StatPlayerListener extends StatListener {
             return;
         }
 
-        StatUtils.instance.modifyStatPlayer(event.getPlayer(), Refs.CAT_STAT, "empty" + event.getBucket().toString().toLowerCase().replace("_", ""), 1);
+        StatUtils.instance.modifyStatItem(event.getPlayer(), Refs.CAT_EMPTY, 
+                new ItemStack(event.getBucket())
+                , 1);
 
     }
 
@@ -341,18 +348,18 @@ public class StatPlayerListener extends StatListener {
         Entity rightClicked = event.getRightClicked();
 
         if ((material == Material.BUCKET) && (rightClicked instanceof Cow)) {
-            StatUtils.instance.modifyStatPlayer(event.getPlayer(), "interact", "milkcow", 1);
+            StatUtils.instance.modifyStatPlayer(event.getPlayer(), Refs.CAT_INTERACT, StatPointer.get("milkcow"), 1); // TODO - namespace?
             return;
         }
 
         if ((material == Material.BOWL) && (rightClicked instanceof MushroomCow)) {
-            StatUtils.instance.modifyStatPlayer(event.getPlayer(), "interact", "milkmushroomcow", 1);
+            StatUtils.instance.modifyStatPlayer(event.getPlayer(), Refs.CAT_INTERACT, StatPointer.get("milkmushroomcow"), 1); // TODO - namespace?
             return;
         }
 
         if ((material == Material.INK_SACK) && (rightClicked instanceof Sheep)) {
-            StatUtils.instance.modifyStatPlayer(event.getPlayer(), "dye", "total", 1);
-            StatUtils.instance.modifyStatItem(event.getPlayer(), "dye", event.getPlayer().getItemInHand(), 1);
+            StatUtils.instance.modifyStatPlayer(event.getPlayer(), Refs.CAT_DYE , StatPointer.get("total"), 1); // TODO - namespace?
+            StatUtils.instance.modifyStatItem(event.getPlayer(), Refs.CAT_DYE, event.getPlayer().getItemInHand(), 1);
             return;
         }
 
@@ -367,12 +374,12 @@ public class StatPlayerListener extends StatListener {
                 return;
             }
 
-            StatUtils.instance.modifyStatPlayer(event.getPlayer(), "wolfdye", "total", 1);
+            StatUtils.instance.modifyStatPlayer(event.getPlayer(), Refs.CAT_DYE_WOLF, StatPointer.get("total"), 1); // TODO - namespace?
 
             /**
              * if MetaDataable, make the item string correct
              */
-            StatUtils.instance.modifyStatItem(event.getPlayer(), "wolfdye", event.getPlayer().getItemInHand(), 1);
+            StatUtils.instance.modifyStatItem(event.getPlayer(), Refs.CAT_DYE_WOLF, event.getPlayer().getItemInHand(), 1);
         }
 
     }
@@ -382,14 +389,7 @@ public class StatPlayerListener extends StatListener {
         if (event.isCancelled() || !shouldTrackPlayer(event.getPlayer(), Refs.TRACK_ENTITY_SHEAR)) {
             return;
         }
-
-        if (event.getEntity() instanceof Sheep) {
-            StatUtils.instance.modifyStatPlayer(event.getPlayer(), "sheared", "sheep", 1);
-        }
-
-        if (event.getEntity() instanceof MushroomCow) {
-            StatUtils.instance.modifyStatPlayer(event.getPlayer(), "sheared", "mushroomcow", 1);
-        }
+        StatUtils.instance.modifyStatEntity(event.getPlayer(), Refs.CAT_SHEAR, event.getEntity(), 1);
 
     }
 
@@ -410,15 +410,15 @@ public class StatPlayerListener extends StatListener {
             if (result.equals(Result.DENY) == false) {
                 if ((item.getType() == Material.FLINT_AND_STEEL) || (item.getType() == Material.FIREBALL)
                         || (item.getType() == Material.SIGN)) {
-                    StatUtils.instance.modifyStatItem(event.getPlayer(), "itemuse", item, 1);
+                    StatUtils.instance.modifyStatItem(event.getPlayer(), Refs.CAT_ITEM_USE, item, 1);
                 }
             }
             if ((clickedBlock.getType() == Material.CAKE_BLOCK)
                     || ((clickedBlock.getType() == Material.TNT) && (item.getType() == Material.FLINT_AND_STEEL))) {
-                StatUtils.instance.modifyStatBlock(event.getPlayer(), "itemuse", clickedBlock, 1);
+                StatUtils.instance.modifyStatBlock(event.getPlayer(), Refs.CAT_ITEM_USE, clickedBlock, 1);
             }
             if (clickedBlock.getType().equals(Material.CHEST)) {
-                StatUtils.instance.modifyStatPlayer(event.getPlayer(), Refs.CAT_STAT, "openchest", 1);
+                StatUtils.instance.modifyStatPlayer(event.getPlayer(), Refs.CAT_STAT, StatPointer.get("openchest"), 1); //TODO - Namespace?
             }
             if (clickedBlock.getType().equals(Material.FLOWER_POT) && (action == Action.RIGHT_CLICK_BLOCK)
                     && (clickedBlock.getData() == 0)) {
@@ -427,7 +427,7 @@ public class StatPlayerListener extends StatListener {
                 for (Material mm : m) {
 
                     if (mm.equals(item.getType())) {
-                        StatUtils.instance.modifyStatItem(event.getPlayer(),"plant",item,1);
+                        StatUtils.instance.modifyStatItem(event.getPlayer(), Refs.CAT_PLANT,item,1);
                     }
                 }
 
@@ -442,9 +442,9 @@ public class StatPlayerListener extends StatListener {
             return;
         }
 
-        StatUtils.instance.modifyStatPlayer(event.getPlayer(),"exp", "lifetimexp", event.getAmount());
+        StatUtils.instance.modifyStatPlayer(event.getPlayer(),Refs.CAT_XP, StatPointer.get("lifetimexp"), event.getAmount());
 
-        StatUtils.instance.setPlayerStat(event.getPlayer(), "exp", "currentexp", event.getPlayer().getTotalExperience() + event.getAmount());
+        StatUtils.instance.setPlayerStat(event.getPlayer(), Refs.CAT_XP, StatPointer.get("currentexp"), event.getPlayer().getTotalExperience() + event.getAmount());
 
     }
 
@@ -453,10 +453,10 @@ public class StatPlayerListener extends StatListener {
         if (!shouldTrackPlayer(event.getPlayer(), Refs.TRACK_PLAYER_EXP)) {
             return;
         }
-        StatUtils.instance.setPlayerStat(event.getPlayer(),  "exp", "currentlvl", event.getNewLevel());
+        StatUtils.instance.setPlayerStat(event.getPlayer(),  Refs.CAT_XP, StatPointer.get("currentlvl"), event.getNewLevel());
         int change = event.getNewLevel() - event.getOldLevel();
         if (change > 0) {
-            StatUtils.instance.modifyStatPlayer(event.getPlayer(), "exp", "lifetimelvl", change);
+            StatUtils.instance.modifyStatPlayer(event.getPlayer(), Refs.CAT_XP, StatPointer.get("lifetimelvl"), change);
         }
 
     }
@@ -470,8 +470,8 @@ public class StatPlayerListener extends StatListener {
         }
 
         if (event.isCancelled() == false) {
-            StatUtils.instance.modifyStatPlayer(player, "enchant", "total", 1);
-            StatUtils.instance.modifyStatPlayer(player, "enchant", "totallvlspent", event.getExpLevelCost());
+            StatUtils.instance.modifyStatPlayer(player, Refs.CAT_ENCHANT, StatPointer.get("total"), 1);
+            StatUtils.instance.modifyStatPlayer(player, Refs.CAT_ENCHANT, StatPointer.get("totallvlspent"), event.getExpLevelCost());
         }
     }
 
@@ -484,7 +484,7 @@ public class StatPlayerListener extends StatListener {
         if (timeRecord.world == null) {
             return;
         }
-        StatUtils.instance.increment(player, timeRecord.world, Refs.CAT_STAT, "playedfor", timeRecord.sessionTime());
+        StatUtils.instance.increment(player, WorldPointer.get(timeRecord.world), Refs.CAT_STAT, StatPointer.get("playedfor"), timeRecord.sessionTime());
         OnlineTimeManager.wipeRecord(player.getName());
 
     }
@@ -506,7 +506,7 @@ public class StatPlayerListener extends StatListener {
         }
 
         if (event.getItem().getType().isEdible()) {
-            StatUtils.instance.modifyStatItem(player,"consume", event.getItem(), 1);
+            StatUtils.instance.modifyStatItem(player, Refs.CAT_CONSUME, event.getItem(), 1);
             return;
         }
         if (event.getItem().getType() == Material.POTION) {
@@ -516,7 +516,7 @@ public class StatPlayerListener extends StatListener {
             if (meta != null) {
                 for (PotionEffect effect : meta.getCustomEffects()) {
 
-                    StatUtils.instance.modifyStatPotion(player, "consume", effect, 1);
+                    StatUtils.instance.modifyStatPotion(player, Refs.CAT_CONSUME, effect, 1);
                 }
                 return;
             }
@@ -527,7 +527,7 @@ public class StatPlayerListener extends StatListener {
                     event.getItem().getDurability());
 
             for (PotionEffect effect : potion) {
-                StatUtils.instance.modifyStatPotion(player, "consume", effect, 1);
+                StatUtils.instance.modifyStatPotion(player, Refs.CAT_CONSUME, effect, 1);
             }
         }
 
@@ -540,6 +540,6 @@ public class StatPlayerListener extends StatListener {
             return;
         }
         Player player = event.getPlayer();
-        StatUtils.instance.modifyStatEntity(player, "leash", event.getEntity(), 1);
+        StatUtils.instance.modifyStatEntity(player, CategoryPointer.get("leash"), event.getEntity(), 1); //TODO - namespace?
     }
 }
