@@ -128,7 +128,18 @@ public class EntityStatBlob implements VariableProvider {
      * @return
      */
     public StatVector getStats(DomainPointer domain, WorldPointer world, CategoryPointer category, StatPointer statistic) {
-        throw new UnsupportedOperationException();
+        StatVector vec = new StatVector(domain, world, category, statistic, true);
+        for(IStat s : this.stats){
+            if(
+                domain.equals(s.getDomain()) &&
+                world.equals(s.getWorld()) &&
+                category.equals(s.getCategory()) &&
+                s.getStatistic().isSubPointerOf(statistic)
+            ){
+                vec.add(s);
+            }
+        }
+        return vec;
     }
 
     /**
