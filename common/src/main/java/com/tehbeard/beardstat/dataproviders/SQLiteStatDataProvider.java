@@ -89,7 +89,7 @@ public class SQLiteStatDataProvider extends JDBCStatDataProvider {
         try {
             byte[] doc = DocumentRegistry.instance().toJson(document.getDocument(), DocumentRegistry.getSerializeAs(document.getDocument().getClass())).getBytes();
             if (doc.length > MysqlStatDataProvider.MAX_DOC_SIZE) {
-                throw new DocumentTooLargeException("Document exceeds max size.");//TODO - Change to a specific exception for this usecase
+                throw new DocumentTooLargeException("Document exceeds max size.");
             }
 
             //2) Generate new revision tag.

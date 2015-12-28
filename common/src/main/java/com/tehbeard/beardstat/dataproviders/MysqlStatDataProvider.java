@@ -109,7 +109,7 @@ public class MysqlStatDataProvider extends JDBCStatDataProvider {
 
     @Override
     public boolean restoreBackup(String file) {
-        return false;//TODO - Implement
+        return false;//TODO - Implement restore function
 //        try {
 //
 //            FileInputStream fr = new FileInputStream(new File(platform.getDataFolder(), file + ".sql.gz"));
@@ -253,19 +253,21 @@ public class MysqlStatDataProvider extends JDBCStatDataProvider {
 
                 IStatDocument doc = document.getDocument();
 
-                boolean isNull = headRev == null && headRev == document.getRevision();
+                boolean isNull = headRev == null && document.getRevision() == null;
 
-                if (!isNull && !headRev.equalsIgnoreCase(document.getRevision())) {
-                    //TODO - Check this actually works.
-                    DocumentFile dbDoc = pullDocument(entityId, document.getDomain(), document.getKey());
-                    doc = doc.mergeDocument(dbDoc);
+                if (!isNull) {
+                    if (!headRev.equalsIgnoreCase(document.getRevision())) {
+                        //TODO - Check this actually works.
+                        DocumentFile dbDoc = pullDocument(entityId, document.getDomain(), document.getKey());
+                        doc = doc.mergeDocument(dbDoc);
+                    }
                 }
 
                 //2) Generate JSON
                 byte[] docData = DocumentRegistry.instance().toJson(document.getDocument(), DocumentRegistry.getSerializeAs(document.getDocument().getClass())).getBytes();
 
                 if (docData.length > MAX_DOC_SIZE) {
-                    throw new DocumentTooLargeException("Document exceeds max size.");//TODO - Change to a specific exception for this usecase
+                    throw new DocumentTooLargeException("Document exceeds max size.");
                 }
 
                 //3) Generate new revision tag.

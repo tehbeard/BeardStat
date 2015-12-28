@@ -181,7 +181,7 @@ public abstract class JDBCStatDataProvider extends JDBCDataSource implements ISt
                 WorldPointer
                         .get(rs.getString("world"))
                         .setId(rs.getInt("worldId"));
-                //TODO - set world human name + outputStr
+                //TODO - Add pulling of a "human name" for a world"
             }
             rs.close();
         } catch (SQLException e) {
@@ -196,7 +196,7 @@ public abstract class JDBCStatDataProvider extends JDBCDataSource implements ISt
                         .setId(rs.getInt("categoryId"));
                 
                         //rs.getString("statwrapper"));
-                //TODO - set outputStr
+                //TODO - set statWrapper for formatting
             }
             rs.close();
         } catch (SQLException e) {

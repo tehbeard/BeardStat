@@ -24,7 +24,7 @@ public interface Promise<T> {
     public static enum State {
         /**
          * A <code>Promise</code> in the <code>DEFERRED</code> state has neither
-         * been resolved nor rejected, and it sill pending completion. This is
+         * been resolved nor rejected, and it sill waiting for completion. This is
          * the initial state of a promise, and it will change to either
          * {@link #RESOVLED} or {@link #REJECTED} upon completion.
          */
@@ -110,7 +110,7 @@ public interface Promise<T> {
     public T getValue();
 
     /**
-     * Returns whether this promise is still pending, or has been
+     * Returns whether this promise is still waiting, or has been
      * resolved/rejected.
      * 
      * @return <code>true</code> if the promise is @link {@link State#RESOVLED

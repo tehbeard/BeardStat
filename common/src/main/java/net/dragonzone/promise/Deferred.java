@@ -496,7 +496,7 @@ public class Deferred<T> implements Promise<T>, Runnable {
 
     /**
      * Checks if this <code>Deferred</code> has been resolved, and if so,
-     * executes any pending callbacks as appropriate.
+     * executes any callback as appropriate.
      * 
      * @threadsafe
      */
