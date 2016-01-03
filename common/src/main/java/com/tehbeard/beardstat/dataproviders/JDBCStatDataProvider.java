@@ -70,10 +70,6 @@ public abstract class JDBCStatDataProvider extends JDBCDataSource implements ISt
     public static final String SQL_SAVE_UUID = "sql/save/setUUID";
     
     //Maintenence scripts
-    public static final String SQL_METADATA_CATEGORY = "sql/maintenence/metadata/category";
-    public static final String SQL_METADATA_STATISTIC = "sql/maintenence/metadata/statistic";
-    public static final String SQL_METADATA_STATIC_STATS = "sql/maintenence/metadata/staticstats";
-    public static final String SQL_METADATA_STATIC_FIXNULL = "sql/maintenence/metadata/fixnull";
     public static final String SQL_KEEP_ALIVE = "sql/maintenence/keepAlive";
 
     //Entity scripts
@@ -146,10 +142,7 @@ public abstract class JDBCStatDataProvider extends JDBCDataSource implements ISt
         try {
             setup();
             doMigration(getDataSourceVersion());
-            executeScript(SQL_METADATA_CATEGORY);
-            executeScript(SQL_METADATA_STATISTIC);
-            executeScript(SQL_METADATA_STATIC_STATS);
-            executeScript(SQL_METADATA_STATIC_FIXNULL);
+            //executeScript(SQL_METADATA_CATEGORY); - TODO PRELOAD DATA
             cacheComponents();
         } catch (SQLException e) {
             throw new BeardStatRuntimeException("Failed to initialize database", e, false);
@@ -478,12 +471,6 @@ public abstract class JDBCStatDataProvider extends JDBCDataSource implements ISt
                             }
 
                         } catch (SQLException e) {
-                            platform.getLogger().log(Level.WARNING, "entity id: {0}}", updateRecord.entityId);
-                            platform.getLogger().log(Level.WARNING, "domain: {0}", stat.getDomain());
-                            platform.getLogger().log(Level.WARNING, "world: {0}", stat.getWorld());
-                            platform.getLogger().log(Level.WARNING, "category: {0}", stat.getCategory());
-                            platform.getLogger().log(Level.WARNING, "statistic: {0}", stat.getStatistic());
-                            platform.getLogger().log(Level.WARNING, "Value: {0}", stat.getValue());
                             platform.mysqlError(e, SQL_SAVE_STAT);
                             checkConnection();
                         }
@@ -611,7 +598,7 @@ public abstract class JDBCStatDataProvider extends JDBCDataSource implements ISt
 
     @Override
     protected String getMigrationScriptPath(int toVersion) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return "sql/maintenence/migration/migrate." + toVersion;
     }
 
     @Override
