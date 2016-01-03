@@ -492,7 +492,7 @@ public class MysqlStatDataProvider extends JDBCStatDataProvider {
                 stmtDocPurge.setInt(1, docId);
                 stmtDocPurge.execute();
                 //If we have zero entries, delete the meta
-                if (getDocumentHistory(entityId, domain, key).getEntries().size() == 0) {
+                if (getDocumentHistory(entityId, domain, key).getEntries().isEmpty()) {
                     stmtMetaDelete.setInt(1, docId);
                     stmtMetaDelete.execute();
                 }
