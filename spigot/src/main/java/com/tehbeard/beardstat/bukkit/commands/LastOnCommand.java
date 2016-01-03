@@ -25,7 +25,6 @@ public class LastOnCommand extends BeardStatCommand {
         super(playerStatManager, plugin);
     }
 
-    private static final String PLAYEDCAT       = "stats";
     private static final String FIRSTPLAYEDSTAT = "firstlogin";
     private static final String LASTPLAYEDSTAT  = "lastlogin";
 
@@ -45,8 +44,23 @@ public class LastOnCommand extends BeardStatCommand {
         if (args.length == 1) {
             sender.sendMessage(ChatColor.YELLOW + args[0]);
         }
-        sender.sendMessage(ChatColor.YELLOW + "First on: " + this.playerStatManager.formatStat(FIRSTPLAYEDSTAT, blob.getStat(Refs.DEFAULT_DOMAIN, Refs.GLOBAL_WORLD, PLAYEDCAT, FIRSTPLAYEDSTAT).getValue()));
-        sender.sendMessage(ChatColor.YELLOW + "Last on: " + this.playerStatManager.formatStat(LASTPLAYEDSTAT, blob.getStat(Refs.DEFAULT_DOMAIN, Refs.GLOBAL_WORLD, PLAYEDCAT, LASTPLAYEDSTAT).getValue()));
+        sender.sendMessage(ChatColor.YELLOW + "First on: " + 
+                
+                        blob.getStat(
+                                Refs.DEFAULT_DOMAIN, 
+                                Refs.GLOBAL_WORLD, 
+                                Refs.CAT_STAT,
+                                Refs.STAT_LOGIN_FIRST
+                        ).getValue()
+        );
+        sender.sendMessage(ChatColor.YELLOW + "Last on: " + 
+                        blob.getStat(
+                                Refs.DEFAULT_DOMAIN, 
+                                Refs.GLOBAL_WORLD, 
+                                Refs.CAT_STAT, 
+                                Refs.STAT_LOGIN_LAST
+                        ).getValue()
+        );
         
         return true;
     }
