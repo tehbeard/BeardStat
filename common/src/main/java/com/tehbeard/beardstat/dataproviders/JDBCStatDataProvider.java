@@ -403,15 +403,54 @@ public abstract class JDBCStatDataProvider extends JDBCDataSource implements ISt
                     platform.getLogger().warning("Could not restablish connection, will try again later, WARNING: CACHE WILL GROW WHILE THIS HAPPENS");
                 } else {
                     platform.getLogger().config("Saving to database");
-                    for (Entry<Integer, StatBlobRecord> entry : writeCache
-                            .entrySet()) {
+                    for (Entry<Integer, StatBlobRecord> entry : writeCache.entrySet()) {
 
                         StatBlobRecord updateRecord = entry.getValue();
                         IStat stat = null;
                         try {
                             saveEntityData.clearBatch();
-                            for (Iterator<IStat> it = updateRecord.stats.iterator(); it.hasNext();) {
+                            Iterator<IStat> it = updateRecord.stats.iterator();
+                            while(it.hasNext()) {
                                 stat = it.next();
+                                
+                                if (stat.getDomain().getId() == -1) {
+                                    //TODO - Save this item
+                                    saveDomain.setString(1,stat.getDomain().getGameTag());
+                                    saveDomain.executeUpdate();
+                                    ResultSet rs = saveDomain.getGeneratedKeys();
+                                    rs.next();
+                                    stat.getDomain().setId(rs.getInt(1));
+
+                                }
+                                if (stat.getWorld().getId() == -1) {
+                                    //TODO - Save this item
+                                    saveWorld.setString(1, stat.getWorld().getGameTag());
+                                    saveWorld.setString(2, stat.getWorld().getGameTag()); // One of these is for display
+                                    saveWorld.executeUpdate();
+                                    ResultSet rs = saveWorld.getGeneratedKeys();
+                                    rs.next();
+                                    stat.getWorld().setId(rs.getInt(1));
+                                }
+                                if (stat.getCategory().getId() == -1) {
+                                    //TODO - Save this item
+                                    saveCategory.setString(1, stat.getCategory().getGameTag());
+                                    saveCategory.executeUpdate();
+                                    ResultSet rs = saveCategory.getGeneratedKeys();
+                                    rs.next();
+                                    stat.getCategory().setId(rs.getInt(1));
+                                }
+                                if (stat.getStatistic().getId() == -1) {
+                                    //TODO - Save this item
+                                    saveStatistic.setString(1, stat.getStatistic().name );
+                                    saveStatistic.setString(2, stat.getStatistic().getClassifiers());
+                                    saveStatistic.setString(3, stat.getStatistic().getHumanName());
+                                    saveStatistic.setString(4, stat.getStatistic().format.toString());
+                                    saveStatistic.executeUpdate();
+                                    ResultSet rs = saveStatistic.getGeneratedKeys();
+                                    rs.next();
+
+                                }
+                                
                                 saveEntityData.setInt(1, updateRecord.entityId);
                                 saveEntityData.setInt(2, stat.getDomain().getId());
                                 saveEntityData.setInt(3, stat.getWorld().getId());

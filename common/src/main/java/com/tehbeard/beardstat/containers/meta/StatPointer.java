@@ -111,7 +111,7 @@ public class StatPointer extends AbstractPointer {
         }
         return true;
     }
-
+    
     public String toTag() {
         StringBuilder builder = new StringBuilder();
         builder.append(name).append(";");
@@ -127,6 +127,21 @@ public class StatPointer extends AbstractPointer {
             }
         }
 
+        return builder.toString();
+    }
+    
+    public String getClassifiers(){
+        StringBuilder builder = new StringBuilder();
+        Iterator<Map.Entry<String, String>> it = this.classifiers.entrySet().iterator();
+        while (it.hasNext()) {
+            Map.Entry<String, String> entry = it.next();
+            builder.append(entry.getKey());
+            builder.append("=");
+            builder.append(entry.getValue());
+            if (it.hasNext()) {
+                builder.append(",");
+            }
+        }
         return builder.toString();
     }
 
