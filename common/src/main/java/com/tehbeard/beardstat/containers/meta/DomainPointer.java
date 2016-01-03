@@ -41,4 +41,28 @@ public class DomainPointer extends AbstractPointer {
         }
         throw new IllegalStateException("Fell out of loop in get()");
     }
+
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 67 * hash + (this.gameTag != null ? this.gameTag.hashCode() : 0);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final DomainPointer other = (DomainPointer) obj;
+        if ((this.gameTag == null) ? (other.gameTag != null) : !this.gameTag.equals(other.gameTag)) {
+            return false;
+        }
+        return true;
+    }
+    
+    
 }
