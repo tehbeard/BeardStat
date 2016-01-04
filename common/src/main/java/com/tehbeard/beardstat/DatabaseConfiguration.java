@@ -1,6 +1,6 @@
 package com.tehbeard.beardstat;
 
-import com.tehbeard.beardstat.cfg.InjectConfig;
+import com.tehbeard.utils.syringe.InjectConfig;
 
 /**
  * Contains JDBC database connection information, populated by the implementing plugin
