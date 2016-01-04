@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.tehbeard.beardstat.utils;
 
 import com.google.gson.JsonDeserializationContext;
@@ -15,7 +11,7 @@ import com.tehbeard.utils.factory.ClassCatalogue;
 import java.lang.reflect.Type;
 
 /**
- *
+ * parser to convert JSON to classes
  * @author James
  */
 public class ClassBasedParser<T> implements JsonSerializer<T>, JsonDeserializer<T> {

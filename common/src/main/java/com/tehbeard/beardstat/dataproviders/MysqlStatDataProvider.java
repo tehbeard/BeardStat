@@ -36,6 +36,10 @@ import java.util.logging.Logger;
 import java.util.zip.Deflater;
 import java.util.zip.GZIPOutputStream;
 
+/**
+ * Mysql provider
+ * @author James
+ */
 public class MysqlStatDataProvider extends JDBCStatDataProvider {
 
     //Document meta scripts

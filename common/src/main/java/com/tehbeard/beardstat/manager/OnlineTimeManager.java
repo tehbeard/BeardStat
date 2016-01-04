@@ -7,8 +7,9 @@ import java.util.HashMap;
  * Manages online time tracking for a player
  * 
  * @author James
- * 
+ * @deprecated will be moving to TimeStat
  */
+@Deprecated
 public class OnlineTimeManager {
 
     public static class ManagerRecord {

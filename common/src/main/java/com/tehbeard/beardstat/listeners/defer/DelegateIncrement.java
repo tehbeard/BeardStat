@@ -11,9 +11,9 @@ import com.tehbeard.beardstat.containers.meta.WorldPointer;
 
 /**
  * Delegate incrementing a stat to a later date
- * 
+ *
  * @author James
- * 
+ *
  */
 public class DelegateIncrement implements Delegate<Void, Promise<EntityStatBlob>> {
 

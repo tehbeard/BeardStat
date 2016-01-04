@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.tehbeard.beardstat.manager;
 
 import com.tehbeard.beardstat.NoRecordFoundException;
@@ -13,7 +9,7 @@ import net.dragonzone.promise.Delegate;
 import net.dragonzone.promise.Promise;
 
 /**
- *
+ * Thread handler for loading blob
  * @author James
  */
 public class ASyncLoadBlob implements Runnable{

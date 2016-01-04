@@ -7,7 +7,7 @@ package com.tehbeard.beardstat.dataproviders;
 import java.util.UUID;
 
 /**
- *
+ * query class to search for entityStatBlobs
  * @author James
  */
 public class ProviderQuery {

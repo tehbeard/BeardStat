@@ -153,6 +153,7 @@ public interface IStatDataProvider {
         }
     }
 
+    @Deprecated
     public void setUUID(String player, String uuid);
 
 }

@@ -30,6 +30,10 @@ import com.tehbeard.beardstat.dataproviders.sqlite.DocEntry.DocRev;
 import com.tehbeard.beardstat.dataproviders.sqlite.DocumentDatabase;
 import com.tehbeard.utils.FileUtils;
 
+/**
+ * SQLite provider
+ * @author James
+ */
 public class SQLiteStatDataProvider extends JDBCStatDataProvider {
 
     private final String filename;

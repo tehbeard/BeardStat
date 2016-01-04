@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.tehbeard.beardstat.dataproviders.sqlite;
 
 import com.google.gson.annotations.Expose;
@@ -11,7 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- *
+ * Document entry for SQLite/JSON provider
  * @author James
  */
 public class DocEntry {

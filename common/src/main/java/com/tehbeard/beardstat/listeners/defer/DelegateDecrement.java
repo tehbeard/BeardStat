@@ -11,9 +11,9 @@ import com.tehbeard.beardstat.containers.meta.WorldPointer;
 
 /**
  * Delegate the decrementing of a stat to occur at at a later date
- * 
+ *
  * @author James
- * 
+ *
  */
 public class DelegateDecrement implements Delegate<Void, Promise<EntityStatBlob>> {
 

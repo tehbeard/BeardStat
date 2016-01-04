@@ -11,11 +11,8 @@ import net.dragonzone.promise.Deferred;
 import net.dragonzone.promise.Promise;
 
 import com.tehbeard.beardstat.Refs;
-import com.tehbeard.beardstat.BeardStatRuntimeException;
 import com.tehbeard.beardstat.DbPlatform;
 import com.tehbeard.beardstat.containers.EntityStatBlob;
-import com.tehbeard.beardstat.containers.meta.CategoryPointer;
-import com.tehbeard.beardstat.containers.meta.DomainPointer;
 import com.tehbeard.beardstat.containers.meta.StatPointer;
 import com.tehbeard.beardstat.containers.meta.WorldPointer;
 import com.tehbeard.beardstat.dataproviders.IStatDataProvider;
@@ -27,7 +24,7 @@ import java.util.Iterator;
 
 
 /**
- * Manages a cache of online stat entities;
+ * Manages a cache of EntityStatBlobs;
  *
  * @author James
  */
