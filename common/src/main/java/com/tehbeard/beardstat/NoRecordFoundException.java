@@ -15,12 +15,12 @@ public class NoRecordFoundException extends Exception {
     /**
      * @param name
      * @param type
-     * @param uUID
+     * @param UUID
      */
-    public NoRecordFoundException(String name, String type, String uUID) {
+    public NoRecordFoundException(String name, String type, String UUID) {
         this.name = name;
         this.type = type;
-        UUID = uUID;
+        this.UUID = UUID;
     }
 
 

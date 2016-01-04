@@ -28,7 +28,6 @@ public class EntityStatManagerTest {
     @Before
     public void setUp() throws SQLException, ClassNotFoundException {
         DatabaseConfiguration config = new DatabaseConfiguration(7);
-        config.version = config.latestVersion;
         config.backups = false;
         
         SQLiteStatDataProvider instance = new SQLiteStatDataProvider(new TestPlatform(), ":memory:", config);

@@ -21,7 +21,6 @@ public class TestSQLiteDataProvider extends IStatDataProviderTest  {
     @BeforeClass
     public static void setUpClass() throws IOException, SQLException, ClassNotFoundException {
         DatabaseConfiguration config = new DatabaseConfiguration(7);
-        config.version = config.latestVersion;
         config.backups = false;
         
         instance = new SQLiteStatDataProvider(new TestPlatform(), ":memory:", config);

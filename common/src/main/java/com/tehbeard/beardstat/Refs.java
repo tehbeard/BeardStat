@@ -6,7 +6,7 @@ import com.tehbeard.beardstat.containers.meta.StatPointer;
 import com.tehbeard.beardstat.containers.meta.WorldPointer;
 
 /**
- *
+ * Global references class for frequently used static values.
  * @author James
  */
 public class Refs {

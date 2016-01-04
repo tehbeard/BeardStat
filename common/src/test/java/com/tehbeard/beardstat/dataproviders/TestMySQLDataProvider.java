@@ -35,7 +35,6 @@ public class TestMySQLDataProvider extends IStatDataProviderTest  {
         Properties properties = new Properties();
         properties.load(is);
         new JavaPropertiesInjector(properties).inject(config);
-        config.version = config.latestVersion;
         System.out.println(config.toString());
         //System.out.println(config);
         instance = new MysqlStatDataProvider(new TestPlatform(), config);

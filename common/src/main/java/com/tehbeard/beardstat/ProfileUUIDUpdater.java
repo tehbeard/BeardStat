@@ -14,7 +14,11 @@ import com.tehbeard.beardstat.dataproviders.ProviderQueryResult;
 import com.tehbeard.utils.uuid.MojangWebAPI;
 
 
-
+/**
+ * Class to handle updating profile UUIDs
+ * @author James
+ */
+@Deprecated
 public class ProfileUUIDUpdater {
     
     public ProfileUUIDUpdater(Logger logger, IStatDataProvider provider) throws Exception{
