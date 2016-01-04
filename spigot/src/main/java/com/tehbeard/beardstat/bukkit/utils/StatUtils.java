@@ -14,7 +14,6 @@ import com.tehbeard.beardstat.bukkit.BukkitPlugin;
 import com.tehbeard.beardstat.bukkit.identifier.IIdentifierGenerator;
 import com.tehbeard.beardstat.containers.EntityStatBlob;
 import com.tehbeard.beardstat.containers.meta.CategoryPointer;
-import com.tehbeard.beardstat.containers.meta.DomainPointer;
 import com.tehbeard.beardstat.containers.meta.StatPointer;
 import com.tehbeard.beardstat.containers.meta.WorldPointer;
 import com.tehbeard.beardstat.listeners.defer.DelegateDecrement;

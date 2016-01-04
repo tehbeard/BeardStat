@@ -62,6 +62,9 @@ public class Refs {
         
         public static final CategoryPointer CAT_XP = CategoryPointer.get("exp");
         
+        public static final CategoryPointer CAT_BLOCK_PLACED = CategoryPointer.get("placed");
+        public static final CategoryPointer CAT_BLOCK_MINED = CategoryPointer.get("mined");
+        
         public static final CategoryPointer CAT_SHEAR = CategoryPointer.get("sheared");
         public static final CategoryPointer CAT_ENCHANT = CategoryPointer.get("enchant");
         
