@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.tehbeard.beardstat.containers;
 
 import com.tehbeard.beardstat.containers.meta.CategoryPointer;
@@ -11,7 +6,7 @@ import com.tehbeard.beardstat.containers.meta.StatPointer;
 import com.tehbeard.beardstat.containers.meta.WorldPointer;
 
 /**
- *
+ * Base implementation of an IStat, includes *Pointer handling
  * @author James
  */
 public abstract class AbstractStat implements IStat {
@@ -57,6 +52,7 @@ public abstract class AbstractStat implements IStat {
 
     /**
      * Set owner of this stat
+     * @param playerStatBlob
      */
     @Override
     public void setOwner(EntityStatBlob playerStatBlob) {

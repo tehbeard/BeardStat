@@ -1,18 +1,10 @@
 package com.tehbeard.beardstat.containers.meta;
 
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 /**
- *
+ * Pointer for categories
  * @author james
  */
 public class CategoryPointer extends AbstractPointer  {

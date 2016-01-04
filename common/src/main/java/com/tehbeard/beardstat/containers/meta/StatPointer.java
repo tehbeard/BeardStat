@@ -14,7 +14,7 @@ import java.util.Set;
 import java.util.TreeMap;
 
 /**
- *
+ * Pointer for statistics, with code to handle classifiers
  * @author James
  */
 public class StatPointer extends AbstractPointer {

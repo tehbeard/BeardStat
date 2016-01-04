@@ -6,7 +6,7 @@ import com.tehbeard.beardstat.utils.ClassBasedParser;
 import com.tehbeard.utils.factory.ClassCatalogue;
 
 /**
- *
+ * Handles registering Document types
  * @author James
  */
 public class DocumentRegistry {

@@ -1,7 +1,7 @@
 package com.tehbeard.beardstat.containers.meta;
 
 /**
- *
+ * Base code for Pointers to have an id
  * @author James
  */
 public abstract class AbstractPointer {

@@ -6,7 +6,7 @@ import com.tehbeard.beardstat.containers.meta.StatPointer;
 import com.tehbeard.beardstat.containers.meta.WorldPointer;
 
 /**
- * Represents a timeable stat, adds a few handy features.
+ * Represents a timeable stat, adds a few handy features for computing time spent.
  * @author James
  *
  */

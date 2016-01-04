@@ -4,7 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- *
+ * Pointer for domains
  * @author james
  */
 public class DomainPointer extends AbstractPointer {
