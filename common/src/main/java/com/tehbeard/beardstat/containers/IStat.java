@@ -71,4 +71,6 @@ public interface IStat {
      * @return
      */
     public IStat copyStat();
+    
+    public String getFormattedString();
 }

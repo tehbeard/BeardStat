@@ -113,4 +113,6 @@ public class StaticStat extends AbstractStat {
     public IStat copyStat() {
         return new StaticStat(this.getDomain(), this.getWorld(), this.getCategory(), this.getStatistic(), this.value);
     }
+
+    
 }

@@ -103,6 +103,14 @@ public abstract class AbstractStat implements IStat {
         return true;
     }
     
+    @Override
+    public String getFormattedString() {
+        return this.getWorld().formatStat(
+                this.getCategory().formatStat(
+                        this.getStatistic().formatStat(getValue())
+                )
+        );
+    }
     
 
 }

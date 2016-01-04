@@ -25,7 +25,7 @@ public class WorldPointer extends AbstractPointer {
         return worldName;
     }
 
-    public String wrapStatistic(String contents) {
+    public String formatStat(String contents) {
         return String.format(statWrapper, contents, this.worldName);
     }
 

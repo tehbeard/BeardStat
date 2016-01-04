@@ -58,7 +58,7 @@ public class playedCommand extends BeardStatCommand {
                 sender.sendMessage(ChatColor.RED + LanguagePack.getMsg("command.error.noplayer", args[0]));
                 return true;
             }
-            StatVector vector = blob.getStats(Refs.DEFAULT_DOMAIN, "*", "stats", "playedfor");
+            StatVector vector = blob.getStats(Refs.DEFAULT_DOMAIN, Refs.WORLD_ALL , Refs.CAT_STAT, Refs.STAT_PLAYEDFOR);
             seconds = vector.getValue();
             
             //Only get record if player is online.
@@ -66,26 +66,18 @@ public class playedCommand extends BeardStatCommand {
             if(onlineTimeRecord != null){
                 seconds += onlineTimeRecord.sessionTime();
             }
-            
-            sender.sendMessage(getPlayedString(seconds) + " total");
 
             for (IStat stat : vector) {
-                sender.sendMessage(LanguagePack.getMsg("command.stat.stat", stat.getWorld(),
-                        getPlayedString(stat.getValue())));
+                sender.sendMessage(
+                        LanguagePack.getMsg("command.stat.stat", stat.getWorld().getGameTag(),
+                        stat.getFormattedString()
+                        )
+                );
             }
         } catch (Exception e) {
             this.plugin.handleError(new BeardStatRuntimeException("An error occured running /played", e, true));
         }
 
         return true;
-    }
-
-    public String getPlayedString(int seconds) {
-
-        if (seconds > 0) {
-            return playerStatManager.formatStat("playedfor", seconds);
-        }
-
-        return LanguagePack.getMsg("command.played.zero");
     }
 }

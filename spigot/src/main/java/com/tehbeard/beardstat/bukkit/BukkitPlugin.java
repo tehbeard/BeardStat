@@ -7,7 +7,6 @@ import com.tehbeard.beardstat.ProfileUUIDUpdater;
 import com.tehbeard.beardstat.StatConfiguration;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.logging.Handler;
@@ -24,8 +23,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.tehbeard.beardstat.bukkit.commands.LastOnCommand;
-import com.tehbeard.beardstat.bukkit.commands.StatCommand;
-import com.tehbeard.beardstat.bukkit.commands.StatPageCommand;
 import com.tehbeard.beardstat.bukkit.commands.StatScriptExecCommand;
 import com.tehbeard.beardstat.bukkit.commands.playedCommand;
 import com.tehbeard.beardstat.containers.EntityStatBlob;
@@ -197,9 +194,9 @@ public class BukkitPlugin extends JavaPlugin implements DbPlatform {
 
         getLogger().info("Loading commands");
         try {
-            getCommand("stats").setExecutor(new StatCommand(this.statManager, this));
+//            getCommand("stats").setExecutor(new StatCommand(this.statManager, this));
             getCommand("played").setExecutor(new playedCommand(this.statManager, this));
-            getCommand("statpage").setExecutor(new StatPageCommand(this.statManager, this));
+//            getCommand("statpage").setExecutor(new StatPageCommand(this.statManager, this));
             getCommand("laston").setExecutor(new LastOnCommand(this.statManager, this));
             //getCommand("beardstatdebug").setExecutor(this.statManager);
             getCommand("statadmin").setExecutor(new Commands(this.statManager, this));

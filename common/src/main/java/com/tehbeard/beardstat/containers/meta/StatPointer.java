@@ -147,8 +147,6 @@ public class StatPointer extends AbstractPointer {
 
     public String formatStat(int value) {
         return String.format(this.outputStr, formatters.get(this.format).format(value));
-        // Wrap output of formatter with outputStr, to allow for things like x
-        // metres
     }
 
     public boolean isSubPointerOf(StatPointer query) {

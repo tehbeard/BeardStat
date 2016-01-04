@@ -83,5 +83,23 @@ public class Refs {
         
         public static final StatPointer STAT_MOVE = StatPointer.get("move");
         
+        public static final StatPointer STAT_PLAYEDFOR = StatPointer.get("playedfor");
+        
+        
+        public static final WorldPointer WORLD_ALL = new AllWorldPointer();
+        
+        static class AllWorldPointer extends WorldPointer {
+
+            private AllWorldPointer() {
+                super("ALL");
+            }
+
+
+            @Override
+            public boolean equals(Object obj) {
+                return true;
+            }
+        }
+                
         
     }
