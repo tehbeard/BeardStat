@@ -25,6 +25,8 @@ import com.tehbeard.beardstat.bukkit.BukkitPlugin;
 import com.tehbeard.beardstat.Refs;
 import com.tehbeard.beardstat.manager.EntityStatManager;
 import com.tehbeard.beardstat.bukkit.utils.StatUtils;
+import com.tehbeard.beardstat.containers.meta.CategoryPointer;
+import com.tehbeard.beardstat.containers.meta.StatPointer;
 
 public class StatEntityListener extends StatListener {
 
@@ -32,8 +34,8 @@ public class StatEntityListener extends StatListener {
         super(playerStatManager, plugin);
     }
 
-    private final String[] DAMAGELBLS = { "damagedealt", "damagetaken" };
-    private final String[] KDLBLS     = { "kills", "deaths" };
+    private final CategoryPointer[] DAMAGELBLS = { CategoryPointer.get("damagedealt"), CategoryPointer.get("damagetaken") };
+    private final CategoryPointer[] KDLBLS     = { CategoryPointer.get("kills"), CategoryPointer.get("deaths") };
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onEntityDamage(EntityDamageEvent event) {
@@ -64,7 +66,7 @@ public class StatEntityListener extends StatListener {
      * @param event
      * @param category
      */
-    private void processEntityDamage(EntityDamageEvent event, String[] category, boolean forceOne) {
+    private void processEntityDamage(EntityDamageEvent event, CategoryPointer[] category, boolean forceOne) {
         // Initialise base stats
         Entity attacked = event.getEntity();
         DamageCause cause = event.getCause();
@@ -111,13 +113,9 @@ public class StatEntityListener extends StatListener {
             return;
         }
 
-        // Total damage
-        StatUtils.instance.modifyStatPlayer(player, category[idx], "total", amount);
-
-
         // Damage cause if not from 
         if (cause != DamageCause.PROJECTILE) {
-            StatUtils.instance.modifyStatPlayer(player, category[idx], cause.toString().toLowerCase().replace("_", ""), amount);
+            StatUtils.instance.modifyStatPlayer(player, category[idx], StatPointer.get(cause.toString().toLowerCase().replace("_", "")), amount);
         }
         // Entity damage
         if ((other != null) && !(other instanceof Player)) {
@@ -129,13 +127,13 @@ public class StatEntityListener extends StatListener {
         }
         // Dispenser
         if(dispenserFired){
-            StatUtils.instance.modifyStatPlayer(player, category[idx], "dispenser", amount);
+            StatUtils.instance.modifyStatPlayer(player, category[idx], StatPointer.get("minecraft:dispenser"), amount);
         }
 
         //PvP
         if ((attacker instanceof Player) && (attacked instanceof Player)) {
-            StatUtils.instance.modifyStatPlayer((Player)attacker, category[0], "pvp", 1);
-            StatUtils.instance.modifyStatPlayer((Player)attacked, category[1], "pvp", 1);
+            StatUtils.instance.modifyStatPlayer((Player)attacker, category[0], StatPointer.get("pvp"), 1);
+            StatUtils.instance.modifyStatPlayer((Player)attacked, category[1], StatPointer.get("pvp"), 1);
         }
     }
 
@@ -152,9 +150,9 @@ public class StatEntityListener extends StatListener {
                 return;
             }
 
-            StatUtils.instance.modifyStatPlayer(player, "stats", "damagehealed", amount);
+            StatUtils.instance.modifyStatPlayer(player, Refs.CAT_STAT, StatPointer.get("damagehealed"), amount);
             if (reason != RegainReason.CUSTOM) {
-                StatUtils.instance.modifyStatPlayer(player, "stats", "heal" + reason.toString().replace("_", "").toLowerCase(), amount);
+                StatUtils.instance.modifyStatPlayer(player, Refs.CAT_STAT, StatPointer.get("heal" + reason.toString().replace("_", "").toLowerCase()), amount);
             }
         }
     }
@@ -166,7 +164,7 @@ public class StatEntityListener extends StatListener {
                 return;
             }
 
-            StatUtils.instance.modifyStatEntity((Player)event.getOwner(), "tame", event.getEntity(), 1);
+            StatUtils.instance.modifyStatEntity((Player)event.getOwner(), CategoryPointer.get("tame"), event.getEntity(), 1);
         }
     }
 
@@ -187,10 +185,10 @@ public class StatEntityListener extends StatListener {
                     continue;
                 }
 
-                StatUtils.instance.modifyStatPlayer(p, "potions", "splashhit", 1);
+                StatUtils.instance.modifyStatPlayer(p, Refs.CAT_POTIONS, StatPointer.get("splashhit"), 1);
                 // added per potion details
                 for (PotionEffect potionEffect : potion.getEffects()) {
-                    StatUtils.instance.modifyStatPotion(p, "potions",potionEffect, 1);
+                    StatUtils.instance.modifyStatPotion(p, Refs.CAT_POTIONS,potionEffect, 1);
                 }
             }
         }
@@ -210,14 +208,14 @@ public class StatEntityListener extends StatListener {
                 return;
             }
 
-            StatUtils.instance.modifyStatPlayer(player, "bow", "shots", 1);
+            StatUtils.instance.modifyStatPlayer(player, Refs.CAT_BOW, StatPointer.get("shots"), 1);
 
             if (event.getBow().containsEnchantment(Enchantment.ARROW_FIRE)) {
-                StatUtils.instance.modifyStatPlayer(player, "bow", "fireshots", 1);
+                StatUtils.instance.modifyStatPlayer(player, Refs.CAT_BOW, StatPointer.get("fireshots"), 1);
             }
 
             if (event.getBow().containsEnchantment(Enchantment.ARROW_INFINITE)) {
-                StatUtils.instance.modifyStatPlayer(player, "bow", "infiniteshots", 1);
+                StatUtils.instance.modifyStatPlayer(player, Refs.CAT_BOW, StatPointer.get("infiniteshots"), 1);
             }
 
         }

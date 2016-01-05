@@ -60,13 +60,19 @@ public class Refs {
         
         public static final CategoryPointer CAT_PLANT = CategoryPointer.get("plant");
         
+        public static final CategoryPointer CAT_CRAFTING = CategoryPointer.get("crafting");
+        
         public static final CategoryPointer CAT_XP = CategoryPointer.get("exp");
+        
+        public static final CategoryPointer CAT_BOW = CategoryPointer.get("bow");
         
         public static final CategoryPointer CAT_BLOCK_PLACED = CategoryPointer.get("placed");
         public static final CategoryPointer CAT_BLOCK_MINED = CategoryPointer.get("mined");
         
         public static final CategoryPointer CAT_SHEAR = CategoryPointer.get("sheared");
         public static final CategoryPointer CAT_ENCHANT = CategoryPointer.get("enchant");
+        
+        public static final CategoryPointer CAT_POTIONS = CategoryPointer.get("potions");
         
         public static final CategoryPointer CAT_CONSUME = CategoryPointer.get("consume");
     
