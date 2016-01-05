@@ -30,11 +30,12 @@ CREATE TABLE IF NOT EXISTS `${PREFIX}_category`(
 )ENGINE=InnoDB DEFAULT CHARSET=latin1;
 CREATE TABLE IF NOT EXISTS `${PREFIX}_statistic`(
   `statisticId` int(11) NOT NULL AUTO_INCREMENT, 
-  `statistic` char(64) NOT NULL,  
+  `statistic` char(64) NOT NULL,
+  `classifiers` TEXT NULL DEFAULT NULL
   `name` char(32) NOT NULL, 
   `formatting` ENUM(  'none',  'timestamp',  'time' ) NOT NULL DEFAULT 'none',
   PRIMARY KEY (`statisticId`),
-  UNIQUE KEY (`statistic`)
+  UNIQUE KEY `stat_uniuq` (  `statistic` ,  `classifiers` ( 512 ) )
 )ENGINE=InnoDB DEFAULT CHARSET=latin1;
 CREATE TABLE IF NOT EXISTS `${PREFIX}_value` (
   `entityId`    int(11) NOT NULL,
