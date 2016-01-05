@@ -21,10 +21,9 @@ public class TestSQLiteDataProvider extends IStatDataProviderTest  {
      
     @BeforeClass
     public static void setUpClass() throws IOException, SQLException, ClassNotFoundException {
-        Assume.assumeTrue("SQLite test.", false);
         DatabaseConfiguration config = new DatabaseConfiguration(7);
         config.backups = false;
-        
+        config.databaseType = "sqlite";
         instance = new SQLiteStatDataProvider(new TestPlatform(), ":memory:", config);
         String preloadStmt = ((SQLiteStatDataProvider)instance).readSQLFile("sqlite","preload");
         for(String s : preloadStmt.split("\\;")){
