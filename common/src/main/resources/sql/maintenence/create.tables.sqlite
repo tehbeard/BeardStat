@@ -26,9 +26,10 @@ CREATE TABLE IF NOT EXISTS `stats_category`(
 CREATE TABLE IF NOT EXISTS `stats_statistic`(
   `statisticId` INTEGER PRIMARY KEY AUTOINCREMENT, 
   `statistic` varchar(64) NOT NULL,  
+  `classifiers` TEXT,
   `name` VARCHAR( 32 ),
   `formatting` VARCHAR(16) NOT NULL DEFAULT 'none',
-  CONSTRAINT uni UNIQUE (`statistic`)
+  CONSTRAINT uni UNIQUE (`statistic`,`classifiers`)
 );
 CREATE TABLE IF NOT EXISTS `stats_value` (
   `entityId`    INTEGER NOT NULL,
