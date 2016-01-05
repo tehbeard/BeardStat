@@ -11,6 +11,7 @@ import com.tehbeard.beardstat.dataproviders.TestPlatform;
 import com.tehbeard.utils.uuid.MojangWebAPI;
 import java.sql.SQLException;
 import static org.junit.Assert.*;
+import org.junit.Assume;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -27,6 +28,7 @@ public class EntityStatManagerTest {
     
     @Before
     public void setUp() throws SQLException, ClassNotFoundException {
+        Assume.assumeTrue("SQLite test.", false);
         DatabaseConfiguration config = new DatabaseConfiguration(7);
         config.backups = false;
         
