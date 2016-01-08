@@ -4,7 +4,6 @@ import java.io.InputStreamReader;
 import java.util.List;
 import java.util.Map;
 
-
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.tehbeard.beardstat.containers.meta.StatPointer;
@@ -23,22 +22,26 @@ import org.bukkit.potion.PotionEffect;
 public class GrahamIdentifierService implements IIdentifierGenerator {
 
     private static Map<String, GrahamItem> items;
-    
-    private static Map<String, GrahamEntity> entities;
+
+    private static Map<Short, GrahamEntity> entities;
 
     public static void readData() {
         //Load item data
         Gson gson = new Gson();
         List<GrahamItem> itemList = gson.fromJson(new InputStreamReader(GrahamIdentifierService.class.getResourceAsStream("data/items.json")), new TypeToken<List<GrahamItem>>() {
         }.getType());
-        
+
         List<GrahamEntity> entityList = gson.fromJson(new InputStreamReader(GrahamIdentifierService.class.getResourceAsStream("data/entities.json")), new TypeToken<List<GrahamEntity>>() {
         }.getType());
 
         for (GrahamItem i : itemList) {
             items.put(i.type + ":" + i.meta, i);
         }
+        
+        for (GrahamEntity e : entityList) {
+            entities.put(e.type, e);
         }
+    }
 
     @Override
     public StatPointer keyForItemstack(ItemStack stack) {
@@ -54,7 +57,8 @@ public class GrahamIdentifierService implements IIdentifierGenerator {
 
     @Override
     public StatPointer keyForEntity(Entity entity) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        
+        return StatPointer.get(entities.get(entity.getType().getTypeId()).getKey());
     }
 
     @Override
@@ -63,6 +67,7 @@ public class GrahamIdentifierService implements IIdentifierGenerator {
     }
 
     public class GrahamItem {
+
         public int type;
         public int meta;
         public String name;
@@ -72,9 +77,10 @@ public class GrahamIdentifierService implements IIdentifierGenerator {
             return "minecraft:" + text_type;
         }
     }
-    
+
     public class GrahamEntity {
-        public int type;
+
+        public short type;
         public String name;
         public String text_type;
 
