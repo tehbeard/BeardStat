@@ -58,7 +58,7 @@ public class GrahamIdentifierService implements IIdentifierGenerator {
     @Override
     public StatPointer keyForEntity(Entity entity) {
         
-        return StatPointer.get(entities.get(entity.getType().getTypeId()).getKey());
+        return StatPointer.get(entities.get(entity.getType().getTypeId()).getKey());//TODO - classifiers for keys
     }
 
     @Override
