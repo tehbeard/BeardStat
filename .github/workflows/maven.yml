@@ -14,8 +14,7 @@ jobs:
       with:
         version: 1.8
     - name: Build with Maven
-      run: 
-        - mvn package --file pom.xml
-        - pwd
-        - ls
+      run: mvn package --file pom.xml
+    - run: pwd
+    - run: ls
       
