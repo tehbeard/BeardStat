@@ -16,7 +16,7 @@ jobs:
     - run: node .github/setup-mvn-settings.js
       env:
         MVN_PASS: ${{ secrets.MVN_PASS }}
-    - run: touch ~/.ssh/known_hosts && ssh-keyscan maven.tehbeard.com >> ~/.ssh/known_hosts
+    - run: ssh-keyscan maven.tehbeard.com > ~/.ssh/known_hosts
     - name: Build with Maven
       run: mvn package deploy -s settings.xml --file pom.xml   
     - run: node -v
