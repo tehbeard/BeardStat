@@ -14,4 +14,4 @@ const settingsContent = `<settings>
    </servers>
  </settings>`
 
-console.log(settingsContent)
+require("fs").writeFileSync("./settings.xml", settingsContent)
