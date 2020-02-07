@@ -106,17 +106,17 @@
     </dependencies>
 
     <distributionManagement>
-        <repository>
-            <id>dev-repo</id>
-            <name>maven.tehbeard.com Releases</name>
-            <url>sftp://maven.tehbeard.com/repo</url>
-        </repository>
-        <snapshotRepository>
-            <id>dev-repo-snap</id>
-            <name>maven.tehbeard.com Snapshots</name>
-            <url>sftp://maven.tehbeard.com/repo</url>
-        </snapshotRepository>
-    </distributionManagement>
+             <repository>
+                <id>github</id>
+                <name>GitHub OWNER Apache Maven Packages</name>
+                <url>https://maven.pkg.github.com/tehbeard/beardstat</url>
+             </repository>
+             <snapshotRepository>
+                <id>github-snap</id>
+                <name>GitHub OWNER Apache Maven Packages</name>
+                <url>https://maven.pkg.github.com/tehbeard/beardstat</url>
+             </snapshotRepository>
+         </distributionManagement>
     <build>
 
     <extensions>
