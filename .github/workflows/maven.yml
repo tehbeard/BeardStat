@@ -22,4 +22,7 @@ jobs:
       #run: mvn package deploy -s settings.xml --file pom.xml
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: mvn package deploy -Dregistry=https://maven.pkg.github.com/tehbeard/beardstat -Dtoken=$GITHUB_TOKEN
+      run: |
+        mkdir ~/.m2
+        echo "<settings><servers><server><id>github</id><username>tehbeard</username><password>${GITHUB_TOKEN}</password></server></servers></settings>" > ~/.m2/settings.xml
+        mvn deploy
