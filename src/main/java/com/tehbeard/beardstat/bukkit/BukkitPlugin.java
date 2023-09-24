@@ -22,8 +22,6 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.mcstats.Metrics;
-import org.mcstats.Metrics.Plotter;
 
 import com.tehbeard.beardstat.bukkit.commands.LastOnCommand;
 import com.tehbeard.beardstat.bukkit.commands.StatCommand;
@@ -221,22 +219,6 @@ public class BukkitPlugin extends JavaPlugin implements DbPlatform {
             OnlineTimeManager.setRecord(player.getName(), player.getWorld().getName());
         }
 
-        // Enabled metrics
-        Metrics metrics;
-        try {
-            metrics = new Metrics(this);
-            metrics.createGraph("Database Type").addPlotter(
-                    new Plotter(getConfig().getString("stats.database.type").toLowerCase()) {
-                        @Override
-                        public int getValue() {
-                            return 1;
-                        }
-                    });// record database type
-
-            metrics.start();
-        } catch (Exception e) {
-            handleError(new BeardStatRuntimeException("Metrics threw an error during startup", null, true));
-        }
         getLogger().info("BeardStat Loaded");
 
     }
