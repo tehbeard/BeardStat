@@ -22,14 +22,14 @@
         </repository>
         <repository>
             <id>escapecraft-repo</id>
-            <url>http://maven.tehbeard.com//</url>
+            <url>https://maven.tehbeard.com//</url>
         </repository>
 
         <!--<repository> <snapshots /> <id>snapshots</id> <name>deferred-snapshot</name> 
         <url>https://maven.dragonzone.net/artifactory/libs-snapshot</url> </repository> -->
         <repository>
             <id>mcStats</id>
-            <url>http://repo.mcstats.org/content/repositories/public</url>
+            <url>https://repo.mcstats.org/content/repositories/public</url>
         </repository>
     </repositories>
 
